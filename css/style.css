@@ -119,7 +119,7 @@ p {
 
 
 ul li ul li:hover { 
-	background: rgba(100, 100, 100, 0.9); 
+	background: rgba(100, 100, 100, 0.9);
 }
 
 ul li:hover ul {
@@ -135,12 +135,13 @@ ul li:hover ul {
 	text-transform: uppercase;
 }
 
-.submenu a {
-	text-transform: none;
+.base-menu > li > a:hover {
+	text-shadow: 0 0 6px #fff;
+	border-bottom: 1px solid #fff;
 }
 
-.main-menu li a:hover {
-	text-shadow: 0 0 6px #fff;
+.submenu a {
+	text-transform: none;
 }
 
 .inner-footer a:hover {
