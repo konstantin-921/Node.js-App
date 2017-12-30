@@ -4,10 +4,6 @@ body {
 html {
 	font-size: 10px;
 }
-a:active, a:focus {outline: none;}
-button:active, button:focus {
-  outline: none;
-}
 .main {
 	display: table;
 	position: relative;
@@ -149,6 +145,10 @@ button:active, button:focus {
 	text-decoration: none;
 	background-color: #fff;
 	color: #646464;
+}
+.offer-btn:focus {
+	outline: none;
+	border: 0;
 }
 .modal img {
 	width: 100%;
