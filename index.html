@@ -36,13 +36,13 @@
           <div class="main-line"></div>
           <p>Верстка на HTML и CSS
             <br>
-          Разработка сайтов под ключ</p>
+          Разработка сайтов</p>
         </div>
       </div>
-      <a href="#" class="main-down"><i class="icon-down"></i></a>
+      <a href="#portfolio" class="main-down slowly"><i class="icon-down"></i></a>
     </div>
     
-    <div class="portfolio">
+    <div class="portfolio" id="portfolio">
       <div class="container">
         <h2 class="section-header">Портфолио</h2>
         <div class="row">
@@ -73,7 +73,7 @@
         <div class="row">
           <div class="col-md-3">
             <strong>Константин Подлесный</strong>
-            <p>Разработка сайтов <br> под ключ</p>
+            <p>Скоро буду пилить <br> вам сайты</p>
           </div>
           <div class="col-md-6">
             <strong>Подпишитесь</strong>
@@ -117,6 +117,23 @@
           var modal = $('.modal');
           modal.find('.modal-body').load(work+'.html');
         }); 
+      });
+    </script>
+    <script>
+      $(document).ready(function(){
+        $(".slowly").on("click", function (event) {
+          //отменяем стандартную обработку нажатия по ссылке
+          event.preventDefault();
+      
+          //забираем идентификатор бока с атрибута href
+          var id  = $(this).attr('href'),
+      
+          //узнаем высоту от начала страницы до блока на который ссылается якорь
+            top = $(id).offset().top;
+          
+          //анимируем переход на расстояние - top за 1500 мс
+          $('body,html').animate({scrollTop: top}, 800);
+        });
       });
     </script>
   </body>
