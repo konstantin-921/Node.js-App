@@ -1,0 +1,13 @@
+@font-face {
+	font-family: "ComicSans";
+	src: url("../fonts/ComicSans/ComicSans.ttf") format("truetype");
+	font-style: bold;
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: "ManoNegra";
+	src: url("../fonts/ManoNegra/ManoNegra.ttf") format("truetype");
+	font-style: bold;
+	font-weight: bold;
+}
