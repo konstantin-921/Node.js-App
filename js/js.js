@@ -1,3 +1,5 @@
+$(document).ready(function() {
+
 $('.sl').slick({
   autoplay: false,
   dots: true,
@@ -34,4 +36,15 @@ $('.sl').slick({
     // settings: "unslick"
     // instead of a settings object
   ]
+});
+
+
+	var $container = $(".masonry-container");
+		$container.imagesLoaded(function () {
+			$container.masonry({
+				columnWidth: ".item",
+			itemSelector: ".item"
+		});
+
+	});
 });

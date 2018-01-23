@@ -6,7 +6,6 @@ html, body {
 	background-color: #000;
 	font-size: 10px;
 	height: 100vh;
-	max-width: 1600px;
 
 }
 
@@ -194,7 +193,7 @@ h1 {
 	margin-left: 230px;
 }
 
-/* Slider styles */
+ /*Slider styles */
 
 .slide-container {
 	position: relative;
@@ -204,7 +203,7 @@ h1 {
 	background: #fff;
 }
 
-.slide-container p:first-child {
+.slide-container p:first-child, .wrapper-gallery p:first-child {
 	font-size: 1.8rem;
 	font-family: "ComicSans", sans-serif;
 	color: #555555;
@@ -224,28 +223,36 @@ h1 {
 	position: absolute;
 	bottom: 0;
 	width: 230px;
-	height: 20px;
+	height: 50px;
 	background: rgba(0, 0, 0, 0.7);
 	color: #fff;
 	text-align: center;
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-	padding: 20px 0;
+	padding: 10px 0;
 }
 
 .sl-caption, .sl-desc {
 	font-family: "ComicSans", sans-serif;
-	margin: 0;
-	padding: 0 10px;
+	margin: 0px;
+}
+
+.sl-caption {
+	font-size: 1.6rem;
+}
+
+.sl-desc {
+	font-size: : 1.2rem;
 }
 
 /* Dots */
 
-.slick-dots li button {
+.slick-dots {
 	position: absolute;
-	top: -275px;
-	left: 490px;
-
+	top: -75px;
+	left: 81%;
+	width: 200px;
 }
+
 
 .slick-dots li button::before {
 	content: "";
@@ -261,4 +268,89 @@ h1 {
 
 .slick-dots li.slick-active button::before {
 	background-color: #AD0000; 
+}
+
+/* Gallery */
+
+.wrapper-gallery {
+	position: relative;
+	z-index: 2;
+	background-color: #fff;
+}
+
+
+.container-fluid {
+	position: relative;
+	z-index: 2;
+	background-color: #fff;
+	height: 600px;
+	width: 75%;
+}
+
+.item {
+	padding: 0;
+}
+
+.item img {
+	width: 100%;
+}
+
+/* Footer */
+
+.footer {
+	position: relative;
+	z-index: 2;
+	background-color: #3b3b3b;
+	width: 100%;
+	padding: 30px;
+}	
+
+.footer-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+	z-index: 2;
+	background: #3b3b3b;
+	height: 140px;
+	width: 75%;
+	margin: 0 auto;
+}
+
+.block {
+	width: 20%;
+	height: 100px;
+	text-align: left;
+	vertical-align: center;
+	line-height: 2.4rem;
+	font-family: "ComicSans Normal", sans-serif;
+	font-size: 1.3rem;
+	color: #fff;
+	font-weight: normal;
+	padding: 10px;
+}
+
+span.name-of-place {
+	font-family: "ComicSans", sans-serif;
+	text-transform: uppercase;
+}
+
+.footer-logo {
+	font-family: "ManoNegra";
+	font-size: 2rem;
+	color: #fff;
+	position: relative;
+	margin: 10px;
+	width: 69px;
+	height: 30px;
+}
+
+.footer-logo::after {
+	content: "";
+	position: absolute;
+	top: 16px;
+	left: 38px;
+	width: 20px;
+	height: 9px;
+	background: url("../img/Chili-footer.png") no-repeat;
 }
