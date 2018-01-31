@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+
 $('.sl').slick({
   autoplay: false,
   dots: true,

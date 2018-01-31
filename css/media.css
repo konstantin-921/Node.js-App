@@ -19,7 +19,7 @@
 	}
 
 	.header-logo {
-		margin-left: 100px;
+		margin-right: auto;
 	}
 
 	.container-fluid {
@@ -55,6 +55,11 @@
 
 	.header-logo {
 		margin-left: 50px;
+	}
+
+	.header-logo::after {
+		left: 85px;
+		top: 35px;
 	}
 
 	.image-board {
@@ -99,4 +104,37 @@
 	.block {
 	width: 25%;
 	
+	}
 }
+
+@media only screen and (max-width: 768px) {
+
+	html, body {
+		font-size: 8px;
+	}
+
+	.header-logo::after {
+		left: 77px;
+		top: 30px;
+	}
+
+	h1 {
+		text-align: center;
+	}
+
+	.adaptiv {
+		margin-top: 15px;
+		margin-right: 0;
+	}
+
+	.navbar {
+		background-color: transparent;
+		border-color: transparent;
+	}
+
+	button.navbar-toggle {
+		background-color: #333;
+	}
+
+}
+
