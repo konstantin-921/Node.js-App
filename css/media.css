@@ -1,5 +1,10 @@
 @media only screen and (max-width: 1350px) {
 	
+	
+	.header-logo {
+		margin-right: auto;
+	}
+
 	.price {
 		height: 700px;
 	}
@@ -14,11 +19,6 @@
 	.right-column-content {
 		margin-left: 200px;
 		padding-top: 20px;
-	}
-
-
-	.header-logo {
-		margin-right: auto;
 	}
 
 	.container-fluid {
@@ -48,7 +48,7 @@
 		font-size: 9px;
 	}
 
-	ul.header-menu {
+	.header-menu {
 		margin-right: auto;
 	}
 
@@ -122,13 +122,27 @@
 	}
 
 	.adaptiv {
+		z-index: 2;
 		margin-top: 15px;
 		margin-right: 0;
+	}
+
+	.collapse.navbar-collapse {
+		margin-top: 30px;
 	}
 
 	.navbar {
 		background-color: transparent;
 		border-color: transparent;
+	}
+
+	.nav.navbar-nav li {
+		width: 200px;
+		background-color: rgba(10, 10, 10, 0.5);
+	}
+
+	.nav.navbar-nav li a:hover {
+		background-color: #111;
 	}
 
 	button.navbar-toggle {
@@ -186,5 +200,56 @@
 		color: #fff;
 	}
 
+	.slide-container p:first-child, .wrapper-gallery p:first-child {
+		padding-left: 70px;
+	}
+
+	.sl {
+		margin-left: 10px;
+		margin: 0 auto;
+	}
+
+	ul.slick-dots {
+		display: none !important;
+	}
+
+	.container-fluid {
+		margin-left: 0px;
+		width: 100%;
+	}
+
+	.footer-container {
+		width: 100%;
+		margin-left: 0px;
+		margin-top: -2px;
+	}
+
+	.block {
+		width: 25%;
+	padding-top: 0;
+	}
 }
 
+@media only screen and (max-width: 500px) {
+	.slick-prev:before, .slick-next:before {
+		color: #555555;
+	}
+
+	.slick-prev:before:hover, .slick-next:before:hover {
+		opacity: 0.9;
+	}
+
+	.slick-prev:before:active, .slick-next:before:active {
+		opacity: 1;
+	}
+
+	.slide-container p:first-child, .wrapper-gallery p:first-child {
+		padding: 0 0 40px 0;
+		text-align: center;
+	}
+
+	.price {
+		height: 650px;
+	}
+
+}

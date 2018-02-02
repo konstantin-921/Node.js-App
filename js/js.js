@@ -20,17 +20,18 @@ $('.sl').slick({
       }
     },
     {
-      breakpoint: 600,
+      breakpoint: 650,
       settings: {
         slidesToShow: 2,
         slidesToScroll: 2
       }
     },
     {
-      breakpoint: 480,
+      breakpoint: 500,
       settings: {
         slidesToShow: 1,
-        slidesToScroll: 1
+        slidesToScroll: 1,
+        arrows: true,
       }
     }
     // You can unslick at a given breakpoint now by adding:
