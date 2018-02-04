@@ -205,7 +205,6 @@
 	}
 
 	.sl {
-		margin-left: 10px;
 		margin: 0 auto;
 	}
 
@@ -226,7 +225,7 @@
 
 	.block {
 		width: 25%;
-	padding-top: 0;
+		padding-top: 0;
 	}
 }
 
