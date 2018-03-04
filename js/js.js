@@ -17,12 +17,9 @@ $('#todoList').dblclick(editTodoItem);
 
 function editTodoItem(event) {
 	 var target = event.target;
+	 $(target).addClass('disabled');
+	 $(target).siblings().removeClass('disabled');
 	 editTodo(target.innerText);
-}
-
-function editTodo(title) {
-	$('.labelItem').addClass('disabled');
-	$('#liInput').removeClass('disabled');
 }
 
 function addTodoLi(text) {
