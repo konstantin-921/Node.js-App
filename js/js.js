@@ -1,52 +1,43 @@
 $(document).ready(function() {
 
-
-$('.sl').slick({
-  autoplay: false,
-  dots: true,
-  arrows: false,
-  infinite: true,
-  speed: 1000,
-  slidesToShow: 4,
-  slidesToScroll: 4,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        infinite: true,
-        dots: true
-      }
-    },
-    {
-      breakpoint: 650,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2
-      }
-    },
-    {
-      breakpoint: 500,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: true,
-      }
-    }
-    // You can unslick at a given breakpoint now by adding:
-    // settings: "unslick"
-    // instead of a settings object
-  ]
-});
+	const todoList = $('#todoList');
+	const todoInput = $('#todoInput');
 
 
-	var $container = $(".masonry-container");
-		$container.imagesLoaded(function () {
-			$container.masonry({
-				columnWidth: ".item",
-			itemSelector: ".item"
-		});
+$(todoInput).on('keydown', addTodoItem)
 
-	});
+function addTodoItem(event) {
+	if(event.keyCode === 13 && (event.target.value.trim() !== '')) {
+		addTodoLi(this.value);
+		$('#todoInput').val('');
+	}
+}
+
+$('#todoList').dblclick(editTodoItem);
+
+function editTodoItem(event) {
+	 var target = event.target;
+	 editTodo(target.innerText);
+}
+
+function editTodo(title) {
+	$('.labelItem').addClass('disabled');
+	$('#liInput').removeClass('disabled');
+}
+
+function addTodoLi(text) {
+	todoItem = document.createElement('li');
+	todoItem.className = 'todoItem';
+
+	labelItem = document.createElement('label');
+	labelItem.className = 'labelItem';
+	labelItem.innerText = text;
+
+todoList.append(
+    $(todoItem).append(
+        $('<input>', {'class': 'liInput disabled', 'id': 'liInput'}),
+        $(labelItem))
+    );
+}
+
 });
