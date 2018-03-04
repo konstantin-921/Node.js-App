@@ -16,10 +16,10 @@ function addTodoItem(event) {
 $('#todoList').dblclick(editTodoItem);
 
 function editTodoItem(event) {
-	 var target = event.target;
+	var target = event.target;
+
 	 $(target).addClass('disabled');
 	 $(target).siblings().removeClass('disabled');
-	 editTodo(target.innerText);
 }
 
 function addTodoLi(text) {
@@ -32,7 +32,7 @@ function addTodoLi(text) {
 
 todoList.append(
     $(todoItem).append(
-        $('<input>', {'class': 'liInput disabled', 'id': 'liInput'}),
+        $('<input>', {'class': 'liInput disabled'}),
         $(labelItem))
     );
 }
