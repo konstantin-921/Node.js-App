@@ -1,55 +1,133 @@
+
 body, html {
-	font-family: "Roboto", sans-serif;
-	font-size: 30px;
-	color: #55a;
-	width: 100%;
-	height: 100vh;
+    width: 100%;
+    height: auto;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 40px;
 }
 
 h1 {
-	text-align: center;
+    text-align: center;
+    color: #204d74;
 }
+
+/* Base style */
 
 .todo {
-	padding: 0;
-	height: 100vh;
-	border: 1px solid #55b;
-	margin-left: 25%;
+    border: 2px solid #d58512;
+    height: auto;
+    width: 500px;
+    margin: 0 auto;
+    position: relative;
 }
 
-.todoInput {
-	padding: 0;
-	padding-left: 30px;
-	width: 100%;
-	border: none;
-	border-bottom: 1px solid #55b;
+.todo-input {
+    position: relative;
+    height: 50px;
+    width: 400px;
+    padding-left: 10px;
+    margin-top: 10px;
+    margin-left: 95px;
+    font-family: inherit;
+    font-size: inherit;
 }
 
-.todoInput:focus {
-	border: 1px solid #311;
-	box-shadow: 0 0 7px;
+.show-all {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 12px;
+    left: 20px;
 }
 
-.todoItem {
-	list-style-type: none;
-	width: 100%;
-	height: 62px;
-	margin-top: 2px;
-	border: 1px solid #55b;
+.bottom {
+    margin-top: 6px;
+    height: 40px;
+    width: 498px;
+    border-top: 2px solid #d58512;
 }
 
-.labelItem {
-	width: 100%;
-	height: 100%;
-	padding-left: 20px;
-	padding-top: 7px;
+ /*Стили новых todo*/
+
+.elem {
+    position: relative;
+    list-style-type: none;
+    width: 400px;
+    height: 60px;
+    border: 1px solid #d58512;
+    margin-left: 55px;
 }
 
-.liInput {
-	width: 100%;
-	height: 100%;
+.deleteButton {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    width: 25px;
+    height: 25px;
+}
+
+.check {
+    position: absolute;
+    top: 5px;
+    right: 440px;
+    width: 30px;
+    height: 30px;
+}
+
+.complited {
+    text-decoration: line-through;
+    color: #3c763d;
+    opacity: 0.5;
+}
+
+
+.label {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding-top: 13px;
+    color: #000;
+    text-align: left;
+}
+
+.editInput {
+    width: 100%;
+    height: 100%;
 }
 
 .disabled {
-	display: none;
+    display: none;
+
+
+}
+
+/*  Footer styles */
+
+.filtres {
+    display: flex;
+    padding-left: 0px;
+    height: 40px;
+    justify-content: space-around;
+    align-items: center;
+    list-style-type: none;
+    font-size: 18px;
+}
+
+a {
+    padding: 0;
+    display: inline-block;
+    color: #5e5e5e;
+    text-decoration: none;
+    text-align: center;
+    border: 1px solid #5e5e5e;
+    width: 107px;
+}
+
+.countTodo {
+    color: #d43f3a;
+}
+
+a.active {
+    border-color: #d58512;
+    width: 50px;
 }
