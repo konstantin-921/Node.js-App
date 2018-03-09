@@ -21,8 +21,6 @@ $(document).ready(function() {
         const li = document.createElement('li');
         li.className = 'elem';
 
-        addToArray ();
-
         const btnDelete = document.createElement('input');
         btnDelete.type = 'button';
         btnDelete.className = 'deleteButton';
@@ -37,6 +35,8 @@ $(document).ready(function() {
 
         const editInput = document.createElement('input');
         editInput.className = 'editInput disabled';
+
+        addToArray ();
 
         function addToArray () {
             arrayTodo.push(li);
@@ -53,7 +53,6 @@ $(document).ready(function() {
 
         $('.deleteButton').on('click', deleteItem);
         $(checkbox).on('change', changeState);
-        $(showAll).on('change', changeAll);
 
         label.ondblclick = function () {
             let target = event.target;
@@ -70,17 +69,41 @@ $(document).ready(function() {
         };
     }
 
+    $(showAll).on('change', changeAll);
+
     function changeAll() {
-        $('.elem').each(function(){
-            $(this).toggleClass('complited');
-            counter = arrayTodo.length;
-            textCount.innerText = counter + ' task done';
-                // $("input[type=checkbox]").prop('checked', true);
-        });
+    	arrayTodo.forEach(function(element) {
+    		if($('#show-all').is(':checked')) {
+    		$(element).addClass('complited');
+    		$("input[type=checkbox]").prop('checked', true);
+    		counter = _.filter(arrayTodo, (element) => longArray(element));
+    		function longArray(element) {
+    			return $(element).hasClass('elem');
+    		}
+        	textCount = document.getElementById('countTodo');
+        	textCount.innerText = counter.length + ' task done';
+    	}
+    		else {
+    			$(element).removeClass('complited');
+    			$("input[type=checkbox]").prop('checked', false);
+    			textCount = document.getElementById('countTodo');
+        		textCount.innerText = 0 + ' task done';
+    		}
+    	});
     }
 
     function deleteItem() {
-        $(this).parent().remove();
+    	$(this).parent().remove();
+    	idElem = $(this).parent().attr('id');
+    	delete arrayTodo[idElem - 1];
+    	arrayComplited = _.filter(arrayTodo, (element) => findSelected(element));
+        function findSelected(element) {
+            return $(element).hasClass('complited');
+        }
+    	counter = arrayComplited.length;
+        textCount = document.getElementById('countTodo');
+        textCount.innerText = counter + ' task done';
+
     }
 
     function changeState() {
@@ -92,6 +115,6 @@ $(document).ready(function() {
         counter = arrayComplited.length;
         textCount = document.getElementById('countTodo');
         textCount.innerText = counter + ' task done';
-    }
+}
 
 });
