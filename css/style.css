@@ -97,10 +97,30 @@ h1 {
 
 .disabled {
     display: none;
-
-
 }
 
+/*  Pagination */
+
+
+.num {
+  display: none;
+}
+
+.paginator {
+	line-height: 150%;
+	font-size: 18px;
+}
+
+.paginator > span {
+  display: inline-block;
+  margin-right: 5px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.paginatorActive {
+  color: red;
+}
 /*  Footer styles */
 
 .filtres {
