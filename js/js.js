@@ -4,226 +4,205 @@ $(document).ready(function() {
     const todoList = $('#todo-list');
     const showAll = $('#show-all');
     const clearTodo = $('#clearTodo');
+    const cntItem = 5;
+    const editButton = $('#editButton');
     let paginator = document.querySelector('.paginator');
-    let allPage = "";
     let textCount = document.getElementById('countTodo');
-    let counter = "";
+    let counter = '';
     let arrayTodo = [];
-    let arrayComplited = [];
+    let renderArray = [];
+    let todoId = 0;
 
-    todoInput.keydown(function(event) {
+    editButton.click(function () {
+    	let inputTodo = document.querySelector('.todo-input');
+        if (inputTodo.value.trim()) {
+            createTodoItem(inputTodo.value);
+            $(todoInput).val('');
+        }
+    });
+
+    todoInput.keydown(function (event) {
         if (event.keyCode === 13 && (event.target.value.trim())) {
             createTodoItem(this.value);
             $(todoInput).val('');
-
         }
     });
 
     function createTodoItem(title) {
 
-        const li = document.createElement('li');
-        li.className = 'elem';
-
-        const btnDelete = document.createElement('input');
-        btnDelete.type = 'button';
-        btnDelete.className = 'deleteButton';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.className = 'check';
-
-        const label = document.createElement('label');
-        label.className = 'label';
-        label.innerText = title;
-
-        const editInput = document.createElement('input');
-        editInput.className = 'editInput disabled';
-
-        $(li).append($(editInput), $(label), $(checkbox), $(btnDelete));
-
-        addToArray ();
-
-        function addToArray () {
-            arrayTodo.push(li);
-            li.id = String(arrayTodo.length);
-            return arrayTodo;
-        }
-
-        _.each(arrayTodo, (element, index) => renderTodo(element, index));
-
-        function renderTodo(element, index) {
-        	if(index < 5) {
-            todoList.append($(element));
-        }
-        }
-
-        $('.deleteButton').on('click', deleteItem);
-        $(checkbox).on('change', changeState);
-
-        label.ondblclick = function () {
-            let target = event.target;
-            $(target).siblings().removeClass('disabled');
-            $(target).addClass('disabled');
-            $(target).prev('input').val(target.innerText);
-            editInput.onkeydown = function () {
-                if (event.keyCode === 13) {
-                    target.innerText = event.target.value;
-                    $(event.target).addClass('disabled');
-                    $(target).removeClass('disabled');
-                }
-            };
+        let todo = {
+            id: todoId,
+            title: title,
+            check: false
         };
-
-        /*   Pagination  */
-
-    	let countItem = arrayTodo.length; // всего Todo
-    	let cntItem = 5; // сколько отображаем сначала
-    	let cntPage = Math.ceil(countItem / cntItem); //кол-во страниц
-    	allPage = cntPage;
-
-    	//выводим список страниц
-		let page = "";
-		for (let i = 0; i < cntPage; i++) {
-  		page += "<span data-page=" + i * cntItem + " id=\"page" + (i + 1) + "\">" + (i + 1) + "</span>";
-		}
-		paginator.innerHTML = page;
+        arrayTodo.push(todo);
+        todoId++;
+        renderPage (true);
     }
 
-    
-   	$(paginator).on('click', getPage);
+    $('body').on('blur', '.editInput', afterEditInput);
+    $('body').on('keydown', '.editInput', function() {
+        if (event.keyCode === 13) {
+            $(this).trigger('blur');
+        }
+    });
+    $('body').on('click', '.tab', checkActiveTab);
+    $('body').on('dblclick', '.label', editInput);
+    $('body').on('change', '.check', changeState);
+    $('body').on('click', '.deleteButton', deleteItem);
+    $(paginator).on('click', getPage);
     $(showAll).on('change', changeAll);
     $(clearTodo).on('click', deleteComplited);
 
-    function getPage () {
-   			target = event.target;
-   			if(target.id == 'page1') {
-   				$('li.elem').remove();
-   				todoList.append($(arrayTodo[0]));
-   				todoList.append($(arrayTodo[1]));
-   				todoList.append($(arrayTodo[2]));
-   				todoList.append($(arrayTodo[3]));
-   				todoList.append($(arrayTodo[4]));
-   			}
-   			else if (target.id == 'page2') {
-   				$('li.elem').remove();
-   				todoList.append($(arrayTodo[5]));
-   				todoList.append($(arrayTodo[6]));
-   				todoList.append($(arrayTodo[7]));
-   				todoList.append($(arrayTodo[8]));
-   				todoList.append($(arrayTodo[9]));
-   			}
+    function renderingTodo (page, currentArray) {
+        let start = page * cntItem - cntItem;
+        let end = page * cntItem;
+        let todos = '';
+        todoList.empty();
+        renderArray = currentArray.slice(start, end);
+        renderArray.forEach(function(el){
+            const className = (el.check) ? 'elem complited' : 'elem';
+            todos += '<li class="' + className + '" id="' + el.id + '">' +
+                '<input type="button" class="deleteButton">' +
+                '<input type="checkbox" class="check">' +
+                '<label class="label">' + el.title + '</label>' +
+                '</li>';
+        });
+        todoList.append(todos);
+        todoList.find('.complited .check').prop('checked', true);
+    }
+
+    function renderPage (last) {
+        let currentArray = checkActiveTab();
+        let countItem = currentArray.length;
+        let cntPage = Math.ceil(countItem / cntItem);
+        let currentPage = (last) ? cntPage : Number($('.paginator .page.active').attr('data-page'));
+        if (currentPage > cntPage) {
+            currentPage = cntPage;
+        }
+
+        let pages = "";
+        for (let i = 1; i <= cntPage; i++) {
+            const className = (i === currentPage) ? 'page active' : 'page';
+            pages += '<span data-page=' + i + ' class="' + className + '"' + ' id="page-' + i + '">' + i + '</span>';
+        }
+        paginator.innerHTML = pages;
+        renderingTodo(currentPage, currentArray);
+    }
+
+    function checkActiveTab() {
+    	$('a').removeClass('chosen');
+    	$(this).addClass('chosen');
+        const activeTab = $('.tab.chosen').attr('id');
+        let currentArray = arrayTodo;
+        if (activeTab === 'selected') {
+            currentArray = currentArray.filter(function(el) {
+            return el.check === false;
+        });
+        } else if (activeTab === 'complet') {
+            currentArray = currentArray.filter(function(el) {
+            return el.check === true;
+        });
+        }
+        return currentArray;
+    }
+
+    function editInput () {
+        let elem = $(event.target).parent();
+        let label = elem.children('.label');
+        let editInput = '<input class="editInput">';
+        elem.append(editInput);
+        elem.children('.editInput').val(label.text());
+        label.hide();
+    }
+
+        function afterEditInput() {
+            let elem = $(event.target).parent();
+            let editInput = event.target;
+            let label = elem.children('.label');
+            // label.show();
+            // elem.children('.label').text(editInput.value);
+            const id = Number($(this).parent('li').attr('id'));
+            console.log(id);
+            arrayTodo.forEach((el) => {
+                if (el.id === id) {
+                    el.title = editInput.value;
+                }
+            });
+            renderPage();
+            // elem.children('.editInput').remove();
+        }
+
+    function getPage() {
+        let target = event.target;
+        $('li.elem').remove();
+        $('span').removeClass('active');
+        if(target.tagName == 'SPAN') {
+            target.className = 'page active';
+        }
+        renderPage();
     }
 
     function changeAll() {
-    	arrayTodo.forEach(function(element) {
-    		if($('#show-all').is(':checked')) {
-    		$(element).addClass('complited');
-    		$("input[type=checkbox]").prop('checked', true);
-    		arrayComplited = _.filter(arrayTodo, (element) => longArray(element));
-    		function longArray(element) {
-    			return $(element).hasClass('elem');
-    		}
-        	textCount.innerText = arrayComplited.length + ' task done';
-    	}
-    		else {
-    			$(element).removeClass('complited');
-    			$("input[type=checkbox]").prop('checked', false);
+        arrayTodo.forEach((el) => {
+            if(el.check = this.checked) {
+            textCount.innerText = arrayTodo.length + ' task done';
+        }
+        	else {
         		textCount.innerText = 0 + ' task done';
-    		}
-    	});
+        	}
+        });
+        renderPage();
     }
 
     function deleteComplited() {
-     	$('li.complited').remove();
-     	arrayTodo.reduceRight(function(array, element, index) {
-    		if (element.classList.contains("complited")) {
-      		array.splice(index, 1);
-    		}
-    		return array;
-  		}, arrayTodo)
-      textCount.innerText = 0 + ' task done';
+        arrayTodo = arrayTodo.filter(function(el) {
+            return el.check === false;
+        });
+        textCount.innerText = 0 + ' task done';
+        renderPage();
     }
 
     function deleteItem() {
-    	$(this).parent().remove();
-    	idElem = $(this).parent().attr('id');
-    	arrayTodo.forEach( function(element, index, array) {
-    		if(element.id == idElem){
-    			array.splice(index, 1);
-    		}
-    	});
-    	arrayComplited = _.filter(arrayTodo, (element) => findSelected(element));
-        function findSelected(element) {
-            return $(element).hasClass('complited');
-        }
-    	counter = arrayComplited.length;
-        textCount.innerText = counter + ' task done';
+        const id = Number($(this).parent('li').attr('id'));
+        arrayTodo.forEach((el, index, arr) => {
+            if (el.id === id) {
+                arr.splice(index, 1);
+            }
+        });
+        renderPage();
+        // let idElem = $(this).parent().attr('id');
+        // arrayTodo.forEach(function (element, index, array) {
+        //     if (element.id === idElem) {
+        //         array.splice(index, 1);
+        //     }
+        // });
+        // arrayComplited = _.filter(arrayTodo, (element) => findSelected(element));
+        //
+        // function findSelected(element) {
+        //     return $(element).hasClass('complited');
+        // }
+        //
+        // counter = arrayComplited.length;
+        // textCount.innerText = counter + ' task done';
 
     }
 
     function changeState() {
-        $(this).parent().toggleClass('complited');
-        arrayComplited = _.filter(arrayTodo, (element) => findSelected(element));
-        function findSelected(element) {
-            return $(element).hasClass('complited');
-        }
-        counter = arrayComplited.length;
-        textCount.innerText = counter + ' task done';
-}
 
+        const id = Number($(this).parent('li').attr('id'));
+        arrayTodo.forEach((el) => {
+            if (el.id === id) {
+                el.check = this.checked;
+            }
+        });
+        renderPage();
+        // arrayComplited = _.filter(arrayTodo, (element) => findSelected(element));
+        //
+        // function findSelected(element) {
+        //      return $(element).hasClass('complited');
+        // }
+        // counter = arrayComplited.length;
+        // textCount.innerText = counter + ' task done';
+    }
 });
-
-
-//                 /*   Pagination  */
-
-//     	let countItem = arrayTodo.length; // всего Todo
-//     	let cntItem = 5; // сколько отображаем сначала
-//     	let cntPage = Math.ceil(countItem / cntItem); //кол-во страниц
-
-//     	//выводим список страниц
-//     	let paginator = document.querySelector(".paginator");
-// 		let page = "";
-
-// 		for (var i = 0; i < cntPage; i++) {
-//   		page += "<span data-page=" + i * cntItem + " id=\"page" + (i + 1) + "\">" + (i + 1) + "</span>";
-// 		}
-// 		paginator.innerHTML = page;
-
-// 		//выводим первые записи {cnt}
-// 		var liNum = document.querySelectorAll(".elem");
-// 		for (var i = 0; i < liNum.length; i++) {
-//   		if (i < cntItem) {
-//     	liNum[i].style.display = "block";
-//   			}
-// 		}
-
-// 		let mainPage = document.getElementById("page1");
-// 		mainPage.classList.add("paginatorActive");
-
-// 		//листаем
-// 		function pagination(event) {
-//   		let e = event || window.event;
-//   		let target = e.target;
-//   		let id = target.id;
-
-//   		if (target.tagName.toLowerCase() != "span") return;
-
-//   		let num = id.substr(4);
-//   		let dataPage = +target.dataset.page;
-//   		mainPage.classList.remove("paginator_active");
-//   		mainPage = document.getElementById(id);
-//   		mainPage.classList.add("paginator_active");
-
-//   		let j = 0;
-//   		for (var i = 0; i < liNum.length; i++) {
-//     	let dataNum = liNum[i].dataset.num;
-//     	if (dataNum <= dataPage || dataNum >= dataPage)
-//       	liNum[i].style.display = "none";
-//         }
-//         for (var i = dataPage; i < liNum.length; i++) {
-//     	if (j >= cntItem) break;
-//     	liNum[i].style.display = "block";
-//     	j++;
-//     	console.log('1');
-//   }
-// }
