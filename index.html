@@ -16,11 +16,11 @@
     <section class="todo">
             <input class="todo-input" id="todo-input" placeholder="Enter task" autofocus>
             <input class="show-all" id="show-all" type="checkbox">
+            <input class="editButton" id="editButton" type="button">
         <ul class="todo-list" id="todo-list">
 
         </ul>
-        <div class = "paginator">
-        </div>
+        <div class = "paginator"></div>
         <footer class = "bottom">
             <span class = "todo-count"></span>
             <ul class = "filtres">
@@ -28,16 +28,16 @@
                     <a href="#" id = "countTodo" class="countTodo">task done</a>
                 </li>
                 <li>
-                    <a href="#" class="allTodo active">All</a>
+                    <a href="#" id="allTodo" class="tab allTodo short chosen">All</a>
                 </li>
                 <li>
-                    <a href="#" class="selected">Active</a>
+                    <a href="#" id="selected" class="tab selected">Active</a>
                 </li>
                 <li>
-                    <a href="#" class="complet">Completed</a>
+                    <a href="#" id="complet" class="tab complet">Completed</a>
                 </li>
                 <li>
-                    <a href="#" id="clearTodo" class="clearTodo">Clear</a>
+                    <a href="#" id="clearTodo" class="clearTodo">Clear check</a>
                 </li>
             </ul>
         </footer>

@@ -21,11 +21,21 @@ h1 {
     position: relative;
 }
 
+.editButton {
+    position: absolute;
+    top: 20px;
+    left: 450px;
+    width: 40px;
+    height: 30px;
+    background: #d58512;
+}
+
 .todo-input {
     position: relative;
     height: 50px;
     width: 400px;
     padding-left: 10px;
+    padding-right: 45px;
     margin-top: 10px;
     margin-left: 95px;
     font-family: inherit;
@@ -97,30 +107,35 @@ h1 {
 
 .disabled {
     display: none;
+
+
 }
 
 /*  Pagination */
 
 
 .num {
-  display: none;
+    display: none;
 }
 
 .paginator {
-	line-height: 150%;
-	font-size: 18px;
+    line-height: 150%;
+    font-size: 18px;
 }
 
 .paginator > span {
-  display: inline-block;
-  margin-right: 5px;
-  margin-left: 5px;
-  cursor: pointer;
+    display: inline-block;
+    width: 20px;
+    height: 30px;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
 }
 
-.paginatorActive {
-  color: red;
+.paginator .active {
+    color: red;
 }
+
 /*  Footer styles */
 
 .filtres {
@@ -147,7 +162,10 @@ a {
     color: #d43f3a;
 }
 
-a.active {
-    border-color: #d58512;
+a.short {
     width: 50px;
+}
+
+a.chosen {
+    border: 2px solid darkred;
 }
