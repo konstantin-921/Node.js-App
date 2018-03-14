@@ -9,14 +9,14 @@
 </head>
 
 <body>
-<main class="main">
+<main class="main container-fluid">
     <header>
         <h1>Todo.js</h1>
     </header>
-    <section class="todo">
+    <section class="todo row">
             <input class="todo-input" id="todo-input" placeholder="Enter task" autofocus>
             <input class="show-all" id="show-all" type="checkbox">
-            <input class="editButton" id="editButton" type="button">
+            <button class="editButton" id="editButton" type="button">Add</button>
         <ul class="todo-list" id="todo-list">
 
         </ul>
@@ -40,6 +40,9 @@
                     <a href="#" id="clearTodo" class="clearTodo">Clear check</a>
                 </li>
             </ul>
+            <div>
+                <a href="#" id = "countTodoLeft" class="countTodo left-count">task left</a>
+            </div>
         </footer>
     </section>
 </main>

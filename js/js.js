@@ -8,23 +8,23 @@ $(document).ready(function() {
     const editButton = $('#editButton');
     let paginator = document.querySelector('.paginator');
     let textCount = document.getElementById('countTodo');
+    let textCountLeft = document.getElementById('countTodoLeft');
     let counter = '';
     let arrayTodo = [];
     let renderArray = [];
     let todoId = 0;
 
-    editButton.click(function () {
-    	let inputTodo = document.querySelector('.todo-input');
+    editButton.click(function() {
+        todoInput.trigger('focus');
+        let inputTodo = document.querySelector('.todo-input');
         if (inputTodo.value.trim()) {
             createTodoItem(inputTodo.value);
-            $(todoInput).val('');
         }
     });
 
     todoInput.keydown(function (event) {
         if (event.keyCode === 13 && (event.target.value.trim())) {
             createTodoItem(this.value);
-            $(todoInput).val('');
         }
     });
 
@@ -37,7 +37,8 @@ $(document).ready(function() {
         };
         arrayTodo.push(todo);
         todoId++;
-        renderPage (true);
+        todoInput.val('');
+        render(true);
     }
 
     $('body').on('blur', '.editInput', afterEditInput);
@@ -46,11 +47,19 @@ $(document).ready(function() {
             $(this).trigger('blur');
         }
     });
-    $('body').on('click', '.tab', checkActiveTab);
+    $('body').on('click', '.tab', function() {
+        $('.tab').removeClass('chosen');
+        $(this).addClass('chosen');
+        renderPage(false, 1);
+    });
     $('body').on('dblclick', '.label', editInput);
     $('body').on('change', '.check', changeState);
     $('body').on('click', '.deleteButton', deleteItem);
-    $(paginator).on('click', getPage);
+    $('body').on('click', '.page', function () {
+        $('.page').removeClass('active');
+        $(this).addClass('active');
+        renderPage();
+    });
     $(showAll).on('change', changeAll);
     $(clearTodo).on('click', deleteComplited);
 
@@ -63,7 +72,7 @@ $(document).ready(function() {
         renderArray.forEach(function(el){
             const className = (el.check) ? 'elem complited' : 'elem';
             todos += '<li class="' + className + '" id="' + el.id + '">' +
-                '<input type="button" class="deleteButton">' +
+                '<button type="button" class="deleteButton glyphicon glyphicon-remove"></button>' +
                 '<input type="checkbox" class="check">' +
                 '<label class="label">' + el.title + '</label>' +
                 '</li>';
@@ -72,15 +81,17 @@ $(document).ready(function() {
         todoList.find('.complited .check').prop('checked', true);
     }
 
-    function renderPage (last) {
+    function renderPage (last, page) {
         let currentArray = checkActiveTab();
         let countItem = currentArray.length;
         let cntPage = Math.ceil(countItem / cntItem);
         let currentPage = (last) ? cntPage : Number($('.paginator .page.active').attr('data-page'));
+        if (page) {
+            currentPage = page;
+        }
         if (currentPage > cntPage) {
             currentPage = cntPage;
         }
-
         let pages = "";
         for (let i = 1; i <= cntPage; i++) {
             const className = (i === currentPage) ? 'page active' : 'page';
@@ -91,18 +102,16 @@ $(document).ready(function() {
     }
 
     function checkActiveTab() {
-    	$('a').removeClass('chosen');
-    	$(this).addClass('chosen');
         const activeTab = $('.tab.chosen').attr('id');
         let currentArray = arrayTodo;
         if (activeTab === 'selected') {
             currentArray = currentArray.filter(function(el) {
-            return el.check === false;
-        });
+                return el.check === false;
+            });
         } else if (activeTab === 'complet') {
             currentArray = currentArray.filter(function(el) {
-            return el.check === true;
-        });
+                return el.check === true;
+            });
         }
         return currentArray;
     }
@@ -113,54 +122,49 @@ $(document).ready(function() {
         let editInput = '<input class="editInput">';
         elem.append(editInput);
         elem.children('.editInput').val(label.text());
+        $('.editInput').trigger('focus');
         label.hide();
     }
 
-        function afterEditInput() {
-            let elem = $(event.target).parent();
-            let editInput = event.target;
-            let label = elem.children('.label');
-            // label.show();
-            // elem.children('.label').text(editInput.value);
-            const id = Number($(this).parent('li').attr('id'));
-            console.log(id);
-            arrayTodo.forEach((el) => {
-                if (el.id === id) {
-                    el.title = editInput.value;
-                }
-            });
-            renderPage();
-            // elem.children('.editInput').remove();
-        }
-
-    function getPage() {
-        let target = event.target;
-        $('li.elem').remove();
-        $('span').removeClass('active');
-        if(target.tagName == 'SPAN') {
-            target.className = 'page active';
-        }
+    function afterEditInput() {
+        let editInput = event.target;
+        const id = Number($(this).parent('li').attr('id'));
+        arrayTodo.forEach((el) => {
+            if (el.id === id) {
+                el.title = editInput.value;
+            }
+        });
         renderPage();
     }
 
     function changeAll() {
         arrayTodo.forEach((el) => {
-            if(el.check = this.checked) {
-            textCount.innerText = arrayTodo.length + ' task done';
-        }
-        	else {
-        		textCount.innerText = 0 + ' task done';
-        	}
+            el.check = this.checked;
         });
-        renderPage();
+        render();
     }
+
 
     function deleteComplited() {
         arrayTodo = arrayTodo.filter(function(el) {
             return el.check === false;
         });
-        textCount.innerText = 0 + ' task done';
-        renderPage();
+        render();
+    }
+
+    function countTodo () {
+        let arrayComplite = _.filter(arrayTodo, (el) => {
+            return el.check === true;
+        });
+        counter = arrayComplite.length;
+        let count = arrayTodo.length - arrayComplite.length;
+        textCountLeft.innerText = count + ' task left';
+        textCount.innerText = counter + ' task done';
+        if (counter > 0 && arrayTodo.length === counter) {
+            showAll.prop('checked', true);
+        } else {
+            showAll.prop('checked', false);
+        }
     }
 
     function deleteItem() {
@@ -170,21 +174,7 @@ $(document).ready(function() {
                 arr.splice(index, 1);
             }
         });
-        renderPage();
-        // let idElem = $(this).parent().attr('id');
-        // arrayTodo.forEach(function (element, index, array) {
-        //     if (element.id === idElem) {
-        //         array.splice(index, 1);
-        //     }
-        // });
-        // arrayComplited = _.filter(arrayTodo, (element) => findSelected(element));
-        //
-        // function findSelected(element) {
-        //     return $(element).hasClass('complited');
-        // }
-        //
-        // counter = arrayComplited.length;
-        // textCount.innerText = counter + ' task done';
+        render();
 
     }
 
@@ -196,13 +186,11 @@ $(document).ready(function() {
                 el.check = this.checked;
             }
         });
-        renderPage();
-        // arrayComplited = _.filter(arrayTodo, (element) => findSelected(element));
-        //
-        // function findSelected(element) {
-        //      return $(element).hasClass('complited');
-        // }
-        // counter = arrayComplited.length;
-        // textCount.innerText = counter + ' task done';
+        render();
+    }
+
+    function render(flag) {
+        renderPage(flag);
+        countTodo ();
     }
 });
