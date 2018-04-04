@@ -1,3 +1,8 @@
+ul, ol, p {
+  padding: 0;
+  margin: 0;
+}
+
 body {
   width: 100%;
   height: 1620px;
@@ -15,7 +20,6 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border-bottom: 1px solid #1e1e1e;
   position: relative;
   max-width: 1000px;
   margin: 0 auto;
@@ -63,38 +67,51 @@ h1 span {
   font-weight: bold;
 }
 
-.image {
-  padding-top: 1px;
-  height: 329px;
+/*  Slider  */
+
+.sl-container {
   width: 100%;
-  background: #000 url('../img/layers.png') center center no-repeat;
+  background-color: #000;
 }
 
-.image-content {
-  position: relative;
-  height: 57px;
+.sl {
+  height: 329px;
+  background: #000;
   max-width: 1000px;
   margin: 0 auto;
-  margin-top: 272px;
 }
 
-.image-overlay {
+.sl-slide {
+  position: relative;
+}
+
+.sl-text {
   position: absolute;
+  bottom: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(30, 30, 30, 0.7);
-  z-index: 1;
 }
 
-.image-text {
-  margin-left: 20px;
-  width: 35%;
+.transperent {
+  position: absolute;
+  background-color: #000;
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+}
+
+.sl-title {
+  position: relative;
   color: #fff;
   font-size: 12px;
+  margin: 15px 0 15px 20px;
+  width: 45%;
 }
 
 .main-menu {
   width: 100%;
+  height: auto;
   background-color: #fff;
 }
 
@@ -120,4 +137,99 @@ h1 span {
 
 .menu-item:first-child {
   margin-left: 5px;
+}
+
+/*   Main content   */
+
+.main-container {
+  width: 100%;
+  height: auto;
+  background-color: #fff;
+}
+
+.main-content-center {
+  max-width: 1000px;
+  border-top: 1px solid #fff;
+  height: 1300px;
+  background-color: #ccc;
+  margin: 0 auto;
+}
+
+h2 {
+  margin: 15px 0 0 15px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #838383;
+}
+
+h2 span {
+  color: #000;
+}
+
+.title-text {
+  margin: 15px 34px 15px 15px;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.cite {
+  color: #b9b9b9;
+  font-style: italic;
+  font-size: 13px;
+}
+
+h3 {
+  margin-left: 15px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #838383;
+}
+
+h3 span {
+  color: #000;
+}
+
+.image-container {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 15px;
+  margin-right: 34px;
+}
+
+.image {
+  border: 12px solid #e2e2e2;
+}
+
+.text-container {
+  margin-left: 50px;
+  margin-right: 90px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.list {
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.list span {
+  font-weight: bold;
+}
+
+.table {
+  width: 960px;
+  margin-left: 15px;
+  margin-right: 20px;
+}
+
+.table th, td {
+  border: 1px solid #d5d5d5;
+  padding: 8px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.table th {
+  background-color: #efefef;
 }
