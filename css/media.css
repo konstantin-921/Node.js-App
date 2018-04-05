@@ -1,17 +1,7 @@
 @media only screen and (max-width: 1024px) {
 
-  .slick-prev:before {
-    position: absolute;
-    left: 40px;
+  .slick-next:before, .slick-prev:before {
     font-size: 40px;
-  }
-  
-  .slick-next:before {
-    font-size: 40px;
-  }
-
-  .slick-next.slick-arrow {
-    right: 40px;
   }
 
   .image-container {
