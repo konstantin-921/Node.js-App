@@ -259,6 +259,7 @@ h3 span {
 
 form {
   font-size: 12px;
+  position: relative;
 }
 
 label, input {
@@ -280,14 +281,12 @@ label, input {
   margin-bottom: 20px;
   background-color: #fff;
 }
-
+  
 .select-label:after {
   position: absolute;
   content: url("../img/layer-6.png");
-  width: 20px;
-  height: 20px;
-  left: 485px;
-  top: 1289px;
+  left: 218px;
+  top: 57px; 
 }
 
 input[type="checkbox"], input[type="radio"] {
