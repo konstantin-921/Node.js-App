@@ -1,15 +1,63 @@
-@media only screen and (max-width: 1600px) {
-  
+@media only screen and (max-width: 1024px) {
+
   .slick-prev:before {
     position: absolute;
-    /* left: 40px; */
+    left: 40px;
     font-size: 40px;
   }
   
   .slick-next:before {
-    position: absolute;
-    right: 40px;
     font-size: 40px;
-  } 
-  
+  }
+
+  .slick-next.slick-arrow {
+    right: 40px;
+  }
+
+  .image-container {
+    flex-wrap: wrap;
+    padding-right: 210px;
+  }
+
+  .image {
+    margin-top: 20px;
+  }
+
+  .text-container {
+    flex-wrap: wrap;
+  }
+
+  .list {
+    margin-top: 20px;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+
+  .slick-prev:before,
+  .slick-next:before {
+    display: none;
+  }
+
+  .sl-text {
+    display: none;
+  }
+
+  .search-form {
+    width: 85px;
+  }
+
+  .text-container {
+    margin-right: 35px;
+    margin-left: 35px;
+  }
+
+  .item {
+    width: 15%;
+    overflow: hidden;
+  }
+
+  #textarea-input {
+    width: 250px;
+  }
 }
