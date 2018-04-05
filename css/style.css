@@ -226,20 +226,22 @@ h3 span {
 }
 
 .table {
-  width: 960px;
+  display: flex;
+  flex-wrap: wrap;
   margin-left: 15px;
-  margin-right: 20px;
+  width: 100%;
 }
 
-.table th, td {
+.item {
+  width: 20%;
   border: 1px solid #d5d5d5;
   padding: 8px;
-  text-align: left;
   font-size: 13px;
 }
 
-.table th {
+.item-th {
   background-color: #efefef;
+  font-weight: bold;
 }
 
 form {

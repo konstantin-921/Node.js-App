@@ -1,0 +1,15 @@
+@media only screen and (max-width: 1600px) {
+  
+  .slick-prev:before {
+    position: absolute;
+    /* left: 40px; */
+    font-size: 40px;
+  }
+  
+  .slick-next:before {
+    position: absolute;
+    right: 40px;
+    font-size: 40px;
+  } 
+  
+}
