@@ -4,13 +4,8 @@
     font-size: 40px;
   }
 
-  .image-container {
-    flex-wrap: wrap;
-    padding-right: 210px;
-  }
-
-  .image {
-    margin-top: 20px;
+  .sl-text {
+    display: none;
   }
 
   .text-container {
@@ -20,6 +15,19 @@
   .list {
     margin-top: 20px;
   }
+}
+
+@media only screen and (max-width: 800px) {
+
+  .image-container {
+    flex-wrap: wrap;
+    padding-right: 50px;
+  }
+
+  .image {
+    margin-top: 20px;
+  }
+
 }
 
 @media only screen and (max-width: 320px) {
