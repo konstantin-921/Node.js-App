@@ -37,6 +37,7 @@ h1 {
   font-size: 36px;
   line-height: 60px;
   color: #fff;
+  animation: tada 2s infinite ease-in-out;
 }
 
 h1 span {
@@ -70,6 +71,7 @@ h1 span {
   color: #fff;
   font-weight: bold;
 }
+
 
 /*  Slider  */
 
@@ -325,4 +327,39 @@ input[type="checkbox"], input[type="radio"] {
   margin: 10px auto 0 auto;
   font-size: 13px;
   color: #767676;
+}
+
+/* Animation of h1 */
+
+@keyframes tada {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  10%,
+  20% {
+    -webkit-transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+
+  30%,
+  50%,
+  70%,
+  90% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+
+  40%,
+  60%,
+  80% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+  }
+
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
 }
