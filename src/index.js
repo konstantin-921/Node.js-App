@@ -1,6 +1,3 @@
-// import $ from 'jquery';
-// import _ from 'underscore';
-// import 'popper.js/dist/umd/popper';
 import './css/style.css';
 
 window.onload = function () {
@@ -17,38 +14,45 @@ window.onload = function () {
   }
 
   function Render(arr) {
+    var that = this;
+    var fragment = document.createDocumentFragment();
     this.renderArray = arr;
-
-    this.todoItem = document.createElement('li');
-    this.todoItem.className = 'elem';
-
-    this.button = document.createElement('button');
-    this.button.className = 'deleteButton';
-    this.button.setAttribute( 'type', 'button' );
-
-    this.checkbox = document.createElement('input');
-    this.checkbox.className = 'check';
-    this.checkbox.setAttribute( 'type', 'checkbox');
-
-    this.label = document.createElement('label');
-    this.label.className = 'label';
 
     this.render = function() {
       while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
       }
-      this.renderArray.forEach(function(element){
 
-        todoList.appendChild(this.todoItem);
-        this.todoItem.appendChild(this.checkbox);
-        this.todoItem.appendChild(this.button);
-        this.todoItem.appendChild(this.label);
-        this.todoItem.id = element.id;
-        this.label.appendChild(document.createTextNode(element.text));
-        
+      that.renderArray.forEach(function(element){
+
+        // var className = (element.check) ? 'elem complited' : 'elem';
+
+        that.todoItem = document.createElement('li');
+        that.todoItem.className = 'elem';
+        that.todoItem.id = element.id;
+    
+        that.button = document.createElement('button');
+        that.button.className = 'deleteButton';
+        that.button.setAttribute( 'type', 'button' );
+    
+        that.checkbox = document.createElement('input');
+        that.checkbox.className = 'check';
+        that.checkbox.setAttribute( 'type', 'checkbox');
+
+        that.label = document.createElement('label');
+        that.label.className = 'label';
+
+        fragment.appendChild(that.todoItem);
+        that.todoItem.appendChild(that.checkbox);
+        that.todoItem.appendChild(that.button);
+        that.todoItem.appendChild(that.label);
+        that.label.appendChild(document.createTextNode(element.text));
+    
       });
-
+      todoList.appendChild(fragment);
+      // document.querySelectorAll('li.complited check').setAttribute('checked', 'true');
     }
+    
   }
 
   todoButton.onclick = function() {
@@ -57,40 +61,32 @@ window.onload = function () {
     id++;
     var renderTodo = new Render(array);
     renderTodo.render();
-    // renderingTodo(array);
   };
 
-  // function renderingTodo (currentArray) {
-  //       var renderArray = currentArray;
-  //       while (todoList.firstChild) {
-  //         todoList.removeChild(todoList.firstChild);
-  //       }
+  todoList.onclick = function() {
+    var target = event.target;
+      if(event.target.classList.contains('deleteButton')){
+      var id = Number(target.parentNode.id);
+      array.forEach(function(el, index, arr) {
+        if (el.id === id) {
+            arr.splice(index, 1);
+        }
+    });
+      var renderTodo = new Render(array);
+      renderTodo.render();
+    }
+  }
 
-  //       renderArray.forEach(function(element){
-
-  //       var todoItem = document.createElement('li');
-  //       todoItem.className = 'elem';
-  //       todoItem.id = element.id;
-        
-  //       var button = document.createElement('button');
-  //       button.className = 'deleteButton';
-  //       button.setAttribute( 'type', 'button' );
-        
-  //       var checkbox = document.createElement('input');
-  //       checkbox.className = 'check';
-  //       checkbox.setAttribute( 'type', 'checkbox');
-
-  //       var label = document.createElement('label');
-  //       label.className = 'label';
-        
-  //       todoList.appendChild(todoItem);
-  //       todoItem.appendChild(checkbox);
-  //       todoItem.appendChild(button);
-  //       todoItem.appendChild(label);
-  //       label.appendChild(document.createTextNode(element.text));
-        
-  //     });
-  // };
- 
+//   todoList.onclick = function() {
+//     var target = event.target;
+//     var id = Number(target.parentNode.id);
+//     array.forEach(function(el) {
+//         if (el.id === id) {
+//           el.check = this.checked;
+//         }
+//     });
+//     var renderTodo = new Render(array);
+//     renderTodo.render();
+// }
 
 };
