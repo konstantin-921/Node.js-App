@@ -25,7 +25,7 @@ h1 {
   margin-top: 5px;
 }
 
-.editButton {
+.edit-button {
   position: absolute;
   font-size: 14px;
   font-weight: bold;
@@ -46,7 +46,6 @@ h1 {
   margin-left: 95px;
   font-family: inherit;
   font-size: inherit;
-  border: 2px solid #d43f3a;
 }
 
 .show-all {
@@ -76,7 +75,6 @@ h1 {
 }
 
 .deleteButton {
-  visibility: hidden;
   position: absolute;
   right: 20px;
   top: 15px;
