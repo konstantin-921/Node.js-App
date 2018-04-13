@@ -25,10 +25,8 @@ window.onload = function () {
 
       that.renderArray.forEach(function(element){
 
-        // var className = (element.check) ? 'elem complited' : 'elem';
-
         that.todoItem = document.createElement('li');
-        that.todoItem.className = 'elem';
+        that.todoItem.className = (element.isComplited) ? 'elem complited' : 'elem';
         that.todoItem.id = element.id;
     
         that.button = document.createElement('button');
@@ -38,7 +36,9 @@ window.onload = function () {
         that.checkbox = document.createElement('input');
         that.checkbox.className = 'check';
         that.checkbox.setAttribute( 'type', 'checkbox');
-
+        if(that.todoItem.classList.contains('complited')) {
+          that.checkbox.setAttribute('checked', 'true');
+        }
         that.label = document.createElement('label');
         that.label.className = 'label';
 
@@ -50,22 +50,25 @@ window.onload = function () {
     
       });
       todoList.appendChild(fragment);
-      // document.querySelectorAll('li.complited check').setAttribute('checked', 'true');
+      
     }
     
   }
 
   todoButton.onclick = function() {
+    if (todoInput.value.trim()){
     var todo = new Todo(todoInput.value);
     array.push(todo);
+    todoInput.value = ('');
     id++;
     var renderTodo = new Render(array);
     renderTodo.render();
+    }
   };
 
   todoList.onclick = function() {
     var target = event.target;
-      if(event.target.classList.contains('deleteButton')){
+      if(target.classList.contains('deleteButton')){
       var id = Number(target.parentNode.id);
       array.forEach(function(el, index, arr) {
         if (el.id === id) {
@@ -77,16 +80,18 @@ window.onload = function () {
     }
   }
 
-//   todoList.onclick = function() {
-//     var target = event.target;
-//     var id = Number(target.parentNode.id);
-//     array.forEach(function(el) {
-//         if (el.id === id) {
-//           el.check = this.checked;
-//         }
-//     });
-//     var renderTodo = new Render(array);
-//     renderTodo.render();
-// }
+  todoList.onclick = function() {
+    var target = event.target;
+    if(target.classList.contains('check')){
+    var id = Number(target.parentNode.id);
+    array.forEach(function(el) {
+        if (el.id === id) {
+          el.isComplited == false ? el.isComplited = true : el.isComplited = false;
+        }
+    });
+  }
+    var renderTodo = new Render(array);
+    renderTodo.render();
+  }
 
 };
