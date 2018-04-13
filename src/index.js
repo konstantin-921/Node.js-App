@@ -68,7 +68,7 @@ window.onload = function () {
 
   todoList.onclick = function() {
     var target = event.target;
-      if(target.classList.contains('deleteButton')){
+      if(event.target.classList.contains('deleteButton')){
       var id = Number(target.parentNode.id);
       array.forEach(function(el, index, arr) {
         if (el.id === id) {
@@ -80,7 +80,7 @@ window.onload = function () {
     }
   }
 
-  todoList.onclick = function() {
+  todoList.onchange = function() {
     var target = event.target;
     if(target.classList.contains('check')){
     var id = Number(target.parentNode.id);
