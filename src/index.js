@@ -4,6 +4,7 @@ window.onload = function () {
   var todoInput = document.getElementById('todo-input');
   var todoButton = document.getElementById('edit-button');
   var todoList = document.getElementById('todo-list');
+  var showAll = document.getElementById('show-all');
   var array = [];
   var id = 0;
 
@@ -16,6 +17,7 @@ window.onload = function () {
   function Render(arr) {
     var that = this;
     var fragment = document.createDocumentFragment();
+
     this.renderArray = arr;
 
     this.render = function() {
@@ -56,6 +58,7 @@ window.onload = function () {
   }
 
   todoButton.onclick = function() {
+    todoInput.focus();
     if (todoInput.value.trim()){
     var todo = new Todo(todoInput.value);
     array.push(todo);
@@ -94,4 +97,13 @@ window.onload = function () {
     renderTodo.render();
   }
 
+  showAll.onclick = function() {
+    if(event.target.classList.contains('show-all')) {
+    array.forEach(function(el) {
+      event.target.checked ? el.isComplited = true : el.isComplited = false;
+    });
+    var renderTodo = new Render(array);
+    renderTodo.render();
+    }
+  }
 };
