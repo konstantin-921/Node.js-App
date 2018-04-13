@@ -20,6 +20,16 @@ window.onload = function () {
 
     this.renderArray = arr;
 
+    this.newTodo = function() {
+      todoInput.focus();
+      if (todoInput.value.trim()){
+        var todo = new Todo(todoInput.value);
+        array.push(todo);
+        todoInput.value = ('');
+        id++;
+    }
+  }
+
     this.render = function() {
       while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
@@ -51,59 +61,73 @@ window.onload = function () {
         that.label.appendChild(document.createTextNode(element.text));
     
       });
+
       todoList.appendChild(fragment);
-      
     }
-    
+  }
+
+  function Setting(arr) {
+
+    this.renderArray = arr;
+
+    this.deleteTodo = function() {
+      var target = event.target;
+      if(event.target.classList.contains('deleteButton')){
+        var id = Number(target.parentNode.id);
+        array.forEach(function(el, index, arr) {
+          if (el.id === id) {
+            arr.splice(index, 1);
+          }
+        });
+      var renderTodo = new Render(array);
+      renderTodo.render();
+      }
+    }
+
+    this.changeState = function() {
+      var target = event.target;
+      if(target.classList.contains('check')){
+        var id = Number(target.parentNode.id);
+        array.forEach(function(el) {
+          if (el.id === id) {
+            el.isComplited == false ? el.isComplited = true : el.isComplited = false;
+          }
+        });
+        var renderTodo = new Render(array);
+        renderTodo.render();
+      }
+    }
+
+    this.changeStateAll = function () {
+      if(event.target.classList.contains('show-all')) {
+        array.forEach(function(el) {
+          event.target.checked ? el.isComplited = true : el.isComplited = false;
+        });
+        var renderTodo = new Render(array);
+        renderTodo.render();
+      }
+    }
   }
 
   todoButton.onclick = function() {
-    todoInput.focus();
-    if (todoInput.value.trim()){
-    var todo = new Todo(todoInput.value);
-    array.push(todo);
-    todoInput.value = ('');
-    id++;
     var renderTodo = new Render(array);
+    renderTodo.newTodo();
     renderTodo.render();
-    }
   };
 
   todoList.onclick = function() {
-    var target = event.target;
-      if(event.target.classList.contains('deleteButton')){
-      var id = Number(target.parentNode.id);
-      array.forEach(function(el, index, arr) {
-        if (el.id === id) {
-            arr.splice(index, 1);
-        }
-    });
-      var renderTodo = new Render(array);
-      renderTodo.render();
-    }
+    var setting = new Setting(array);
+    setting.deleteTodo();
   }
 
   todoList.onchange = function() {
-    var target = event.target;
-    if(target.classList.contains('check')){
-    var id = Number(target.parentNode.id);
-    array.forEach(function(el) {
-        if (el.id === id) {
-          el.isComplited == false ? el.isComplited = true : el.isComplited = false;
-        }
-    });
-  }
-    var renderTodo = new Render(array);
-    renderTodo.render();
+    var setting = new Setting(array);
+    setting.changeState();
   }
 
   showAll.onclick = function() {
-    if(event.target.classList.contains('show-all')) {
-    array.forEach(function(el) {
-      event.target.checked ? el.isComplited = true : el.isComplited = false;
-    });
-    var renderTodo = new Render(array);
-    renderTodo.render();
-    }
+    var setting = new Setting(array);
+    setting.changeStateAll();
   }
+  
 };
