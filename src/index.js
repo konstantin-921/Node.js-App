@@ -6,6 +6,9 @@ window.onload = function () {
   var todoList = document.getElementById('todo-list');
   var showAll = document.getElementById('show-all');
   var deleteAll = document.getElementById('clearTodo');
+  var textCount = document.getElementById('countTodo');
+  var textCountLeft = document.getElementById('countTodoLeft');
+  var counter = '';
   var array = [];
   var id = 0;
 
@@ -37,6 +40,7 @@ window.onload = function () {
       }
 
       var setting = new Setting(array);
+      setting.countTodo();
 
       that.renderArray = setting.checkActive();
 
@@ -132,6 +136,22 @@ window.onload = function () {
         }
         return currentArray;
     }
+
+    this.countTodo = function() {
+      var arrayComplite = array.filter( function(el) {
+        return el.isComplited === true;
+      });
+      counter = arrayComplite.length;
+      var countLeft = array.length - arrayComplite.length;
+      textCountLeft.textContent = countLeft + ' task left';
+      textCount.textContent = counter + ' task done';
+      if (counter > 0 && array.length === counter) {
+        showAll.setAttribute('checked', 'true');
+      }
+       else {
+        showAll.setAttribute('checked', 'false');
+      }
+    }
   }
 
   var setting = new Setting(array);
@@ -170,5 +190,6 @@ window.onload = function () {
   deleteAll.onclick = function() {
     setting.deleteComplited();
   }
+
 
 };
