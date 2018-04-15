@@ -108,7 +108,7 @@ window.onload = function () {
         var id = Number(target.parentNode.id);
         array.forEach(function(el) {
           if (el.id === id) {
-            el.isComplited == false ? el.isComplited = true : el.isComplited = false;
+            el.isComplited = el.isComplited === false;
           }
         });
         renderTodo.render();
@@ -146,10 +146,10 @@ window.onload = function () {
       textCountLeft.textContent = countLeft + ' task left';
       textCount.textContent = counter + ' task done';
       if (counter > 0 && array.length === counter) {
-        showAll.setAttribute('checked', 'true');
+        showAll.checked = true;
       }
        else {
-        showAll.setAttribute('checked', 'false');
+        showAll.checked = false;
       }
     }
   }
