@@ -5,6 +5,7 @@ window.onload = function () {
   var todoButton = document.getElementById('edit-button');
   var todoList = document.getElementById('todo-list');
   var showAll = document.getElementById('show-all');
+  var deleteAll = document.getElementById('clearTodo');
   var array = [];
   var id = 0;
 
@@ -30,10 +31,14 @@ window.onload = function () {
     }
   }
 
-    this.render = function() {
+    this.render = function(currentArray) {
       while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
       }
+
+      var setting = new Setting(array);
+
+      that.renderArray = setting.checkActive();
 
       that.renderArray.forEach(function(element){
 
@@ -64,10 +69,13 @@ window.onload = function () {
 
       todoList.appendChild(fragment);
     }
+
   }
 
   function Setting(arr) {
-
+    
+    var renderTodo = new Render(array);
+    
     this.renderArray = arr;
 
     this.deleteTodo = function() {
@@ -79,9 +87,15 @@ window.onload = function () {
             arr.splice(index, 1);
           }
         });
-      var renderTodo = new Render(array);
       renderTodo.render();
       }
+    }
+
+    this.deleteComplited = function() {
+      array = array.filter(function(el) {
+        return el.isComplited === false;
+      });
+      renderTodo.render();
     }
 
     this.changeState = function() {
@@ -93,41 +107,68 @@ window.onload = function () {
             el.isComplited == false ? el.isComplited = true : el.isComplited = false;
           }
         });
-        var renderTodo = new Render(array);
         renderTodo.render();
       }
     }
 
     this.changeStateAll = function () {
-      if(event.target.classList.contains('show-all')) {
         array.forEach(function(el) {
           event.target.checked ? el.isComplited = true : el.isComplited = false;
         });
-        var renderTodo = new Render(array);
         renderTodo.render();
-      }
+    }
+
+    this.checkActive = function() {
+      var activeTab = document.querySelector('.tab.chosen').id;
+        var currentArray = array;
+        if (activeTab === 'selected') {
+            currentArray = currentArray.filter(function(el) {
+                return el.isComplited === false;
+            });
+        } else if (activeTab === 'complet') {
+            currentArray = currentArray.filter(function(el) {
+                return el.isComplited === true;
+            });
+        }
+        return currentArray;
     }
   }
 
+  var setting = new Setting(array);
+  var renderTodo = new Render(array);
+
   todoButton.onclick = function() {
-    var renderTodo = new Render(array);
     renderTodo.newTodo();
     renderTodo.render();
   };
 
   todoList.onclick = function() {
-    var setting = new Setting(array);
     setting.deleteTodo();
   }
 
   todoList.onchange = function() {
-    var setting = new Setting(array);
     setting.changeState();
   }
 
   showAll.onclick = function() {
-    var setting = new Setting(array);
     setting.changeStateAll();
   }
-  
+
+  footer.onclick = function(event) {
+    event.preventDefault();
+    if(event.target.classList.contains('tab')) {
+      var tabs = document.getElementsByClassName('tab');
+      for(var i = 0; i < tabs.length ; i++) {
+        tabs[i].classList.remove('chosen');
+      }
+      event.target.classList.add('chosen');
+      setting.checkActive();
+      renderTodo.render();
+    }
+  }
+
+  deleteAll.onclick = function() {
+    setting.deleteComplited();
+  }
+
 };
