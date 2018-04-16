@@ -8,6 +8,8 @@ window.onload = function () {
   var deleteAll = document.getElementById('clearTodo');
   var textCount = document.getElementById('countTodo');
   var textCountLeft = document.getElementById('countTodoLeft');
+  var paginator = document.querySelector('.paginator');
+  var cntItem = 7;
   var counter = '';
   var array = [];
   var id = 0;
@@ -34,15 +36,18 @@ window.onload = function () {
     }
   }
 
-    this.render = function(currentArray) {
+    this.render = function(pages) {
       while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
       }
 
       var setting = new Setting(array);
-      setting.countTodo();
+      
+      var newArray = setting.checkActive();
+      var start = pages * cntItem - cntItem;
+      var end = pages * cntItem;
+      that.renderArray = newArray.slice(start, end);
 
-      that.renderArray = setting.checkActive();
 
       that.renderArray.forEach(function(element){
 
@@ -70,8 +75,42 @@ window.onload = function () {
         that.label.appendChild(document.createTextNode(element.text));
     
       });
+      
+      var theFirstChild = todoList.firstElementChild;
+      todoList.insertBefore(fragment, theFirstChild);
+    }
 
-      todoList.appendChild(fragment);
+    this.renderPage = function(flag) {
+      var setting = new Setting(array);
+      var currentArray = setting.checkActive();
+      var fragment = document.createDocumentFragment();
+      var countItem = currentArray.length;
+      var cntPage = Math.ceil(countItem / cntItem);
+      var currentPage = cntPage;
+      var activePage = document.querySelector('.paginator .page.active');
+      if(activePage) {
+        currentPage = (flag) ? parseInt(document.querySelector('.paginator .page.active').id) : cntPage;
+      }
+      // if (page) {
+      //   currentPage = page;
+      // }
+      if (currentPage > cntPage) {
+        currentPage = cntPage;
+      }
+      while (paginator.firstChild) {
+        paginator.removeChild(paginator.firstChild);
+      }
+      for (var i = 1; i <= cntPage; i++) {
+        var className = (i === currentPage) ? 'page active' : 'page';
+        var span = document.createElement('span');
+        span.className = className;
+        span.id = i + ' page';
+        span.textContent = i;
+        paginator.appendChild(span);
+      }
+
+      setting.countTodo();
+      that.render(currentPage);
     }
 
   }
@@ -91,7 +130,7 @@ window.onload = function () {
             arr.splice(index, 1);
           }
         });
-      renderTodo.render();
+      renderTodo.renderPage(true);
       }
     }
 
@@ -99,7 +138,7 @@ window.onload = function () {
       array = array.filter(function(el) {
         return el.isComplited === false;
       });
-      renderTodo.render();
+      renderTodo.renderPage(true);
     }
 
     this.changeState = function() {
@@ -111,7 +150,7 @@ window.onload = function () {
             el.isComplited = el.isComplited === false;
           }
         });
-        renderTodo.render();
+        renderTodo.renderPage(true);
       }
     }
 
@@ -119,7 +158,7 @@ window.onload = function () {
         array.forEach(function(el) {
           event.target.checked ? el.isComplited = true : el.isComplited = false;
         });
-        renderTodo.render();
+        renderTodo.renderPage(true);
     }
 
     this.checkActive = function() {
@@ -159,7 +198,7 @@ window.onload = function () {
 
   todoButton.onclick = function() {
     renderTodo.newTodo();
-    renderTodo.render();
+    renderTodo.renderPage();
   };
 
   todoList.onclick = function() {
@@ -183,12 +222,24 @@ window.onload = function () {
       }
       event.target.classList.add('chosen');
       setting.checkActive();
-      renderTodo.render();
+      renderTodo.renderPage(true);
     }
   }
 
   deleteAll.onclick = function() {
     setting.deleteComplited();
+  }
+
+  paginator.onclick = function(event) {
+    event.preventDefault();
+    if(event.target.classList.contains('page')) {
+      var page = this.querySelectorAll('.page');
+      for(var i = 0; i < page.length ; i++) {
+        page[i].classList.remove('active');
+      }
+      event.target.classList.add('active');
+      renderTodo.renderPage(true);
+    }
   }
 
 
