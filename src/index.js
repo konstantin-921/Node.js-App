@@ -88,12 +88,14 @@ window.onload = function () {
     this.saveState = function() {
       var arr = JSON.stringify(array);
       localStorage['state.array'] = arr;
+      localStorage['id.array'] = id;
     }
 
     this.resume = function() {
       var arr = JSON.parse(localStorage['state.array']);
+      id = Number(localStorage['id.array']);
       array = arr;
-      that.renderPage();
+      that.renderPage(false);
     }
 
     this.renderPage = function(flag) {
