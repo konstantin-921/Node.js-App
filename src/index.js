@@ -62,6 +62,7 @@ window.onload = function () {
     
         that.button = document.createElement('button');
         that.button.className = 'deleteButton';
+        that.button.textContent = 'Del';
         that.button.setAttribute( 'type', 'button' );
     
         that.checkbox = document.createElement('input');
@@ -255,5 +256,5 @@ window.onload = function () {
       renderTodo.renderPage(true);
     }
   }
-  renderTodo.resume();
+    renderTodo.resume();
 };

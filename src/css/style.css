@@ -63,6 +63,7 @@ h1 {
   left: 50px;
   font-size: 14px;
   font-weight: bold;
+  border-color: #aa0c07;
   background-color: #aa0c07;
 }
 
@@ -86,6 +87,11 @@ h1 {
 
 .deleteButton {
   position: absolute;
+  padding: 0;
+  background-color: #aa0c07;
+  border-color: #aa0c07;
+  font-size: 12px;
+  font-weight: bold;
   right: 20px;
   top: 15px;
   width: 25px;
@@ -119,8 +125,7 @@ h1 {
   overflow: hidden;
   width: 83%;
   height: 100%;
-  padding-top: 13px;
-  padding-left: 10px;
+  padding: 10px;
   color: #000;
   text-align: left;
 }
