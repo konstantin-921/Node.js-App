@@ -75,7 +75,6 @@ window.onload = function () {
         that.label.appendChild(document.createTextNode(element.text));
     
       });
-      
       var theFirstChild = todoList.firstElementChild;
       todoList.insertBefore(fragment, theFirstChild);
     }
@@ -91,9 +90,6 @@ window.onload = function () {
       if(activePage) {
         currentPage = (flag) ? parseInt(document.querySelector('.paginator .page.active').id) : cntPage;
       }
-      // if (page) {
-      //   currentPage = page;
-      // }
       if (currentPage > cntPage) {
         currentPage = cntPage;
       }
