@@ -17,7 +17,7 @@ window.onload = function () {
   var setting = new Setting(array);
   var renderTodo = new Render(array);
 
-  renderTodo.resume();
+  
   
   function Todo(text) {
     this.isComplited = false;
@@ -82,10 +82,10 @@ window.onload = function () {
       });
       var theFirstChild = todoList.firstElementChild;
       todoList.insertBefore(fragment, theFirstChild);
-      saveState();
+      that.saveState();
     }
 
-    function saveState() {
+    this.saveState = function() {
       var arr = JSON.stringify(array);
       localStorage['state.array'] = arr;
     }
@@ -253,4 +253,5 @@ window.onload = function () {
       renderTodo.renderPage(true);
     }
   }
+  renderTodo.resume();
 };
