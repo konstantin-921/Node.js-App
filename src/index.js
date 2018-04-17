@@ -14,6 +14,11 @@ window.onload = function () {
   var array = [];
   var id = 0;
 
+  var setting = new Setting(array);
+  var renderTodo = new Render(array);
+
+  renderTodo.resume();
+  
   function Todo(text) {
     this.isComplited = false;
     this.text = text;
@@ -77,6 +82,18 @@ window.onload = function () {
       });
       var theFirstChild = todoList.firstElementChild;
       todoList.insertBefore(fragment, theFirstChild);
+      saveState();
+    }
+
+    function saveState() {
+      var arr = JSON.stringify(array);
+      localStorage['state.array'] = arr;
+    }
+
+    this.resume = function() {
+      var arr = JSON.parse(localStorage['state.array']);
+      array = arr;
+      that.renderPage();
     }
 
     this.renderPage = function(flag) {
@@ -189,8 +206,7 @@ window.onload = function () {
     }
   }
 
-  var setting = new Setting(array);
-  var renderTodo = new Render(array);
+
 
   todoButton.onclick = function() {
     renderTodo.newTodo();
@@ -237,6 +253,4 @@ window.onload = function () {
       renderTodo.renderPage(true);
     }
   }
-
-
 };
