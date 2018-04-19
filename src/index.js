@@ -1,28 +1,30 @@
 import './css/style.css';
 
 window.onload = function () {
-  var todoInput = document.getElementById('todo-input');
-  var todoButton = document.getElementById('edit-button');
-  var todoList = document.getElementById('todo-list');
-  var showAll = document.getElementById('show-all');
-  var deleteAll = document.getElementById('clearTodo');
-  var textCount = document.getElementById('countTodo');
-  var textCountLeft = document.getElementById('countTodoLeft');
-  var paginator = document.querySelector('.paginator');
-  var cntItem = 7;
-  var counter = '';
-  var array = [];
-  var id = 0;
 
-  var setting = new Setting(array);
-  var renderTodo = new Render(array);
+  var model = new Model();
+  var control = new Control(model.array);
+  var renderTodo = new Render(model.array);
 
-  
-  
+  function Model() {
+    this.todoInput = document.getElementById('todo-input');
+    this.todoButton = document.getElementById('edit-button');
+    this.todoList = document.getElementById('todo-list');
+    this.showAll = document.getElementById('show-all');
+    this.deleteAll = document.getElementById('clearTodo');
+    this.textCount = document.getElementById('countTodo');
+    this.textCountLeft = document.getElementById('countTodoLeft');
+    this.paginator = document.querySelector('.paginator');
+    this.cntItem = 7;
+    this.counter = '';
+    this.array = [];
+    this.id = 0;
+  }
+
   function Todo(text) {
     this.isComplited = false;
     this.text = text;
-    this.id = id;
+    this.id = model.id;
   }
 
   function Render(arr) {
@@ -32,25 +34,23 @@ window.onload = function () {
     this.renderArray = arr;
 
     this.newTodo = function() {
-      todoInput.focus();
-      if (todoInput.value.trim()){
-        var todo = new Todo(todoInput.value);
-        array.push(todo);
-        todoInput.value = ('');
-        id++;
+      model.todoInput.focus();
+      if (model.todoInput.value.trim()){
+        var todo = new Todo(model.todoInput.value);
+        model.array.push(todo);
+        model.todoInput.value = ('');
+        model.id++;
     }
   }
 
     this.render = function(pages) {
-      while (todoList.firstChild) {
-        todoList.removeChild(todoList.firstChild);
+      while (model.todoList.firstChild) {
+        model.todoList.removeChild(model.todoList.lastChild);
       }
-
-      var setting = new Setting(array);
       
-      var newArray = setting.checkActive();
-      var start = pages * cntItem - cntItem;
-      var end = pages * cntItem;
+      var newArray = control.checkActive();
+      var start = pages * model.cntItem - model.cntItem;
+      var end = pages * model.cntItem;
       that.renderArray = newArray.slice(start, end);
 
 
@@ -81,30 +81,29 @@ window.onload = function () {
         that.label.appendChild(document.createTextNode(element.text));
     
       });
-      var theFirstChild = todoList.firstElementChild;
-      todoList.insertBefore(fragment, theFirstChild);
-      that.saveState();
+      var theFirstChild = model.todoList.firstElementChild;
+      model.todoList.insertBefore(fragment, theFirstChild);
+      that.saveState(); // record state to the LocalStorage
     }
 
     this.saveState = function() {
-      var arr = JSON.stringify(array);
+      var arr = JSON.stringify(model.array);
       localStorage['state.array'] = arr;
-      localStorage['id.array'] = id;
+      localStorage['id.array'] = model.id;
     }
 
     this.resume = function() {
       var arr = JSON.parse(localStorage['state.array']);
-      id = Number(localStorage['id.array']);
-      array = arr;
+      model.id = Number(localStorage['id.array']);
+      model.array = arr;
       that.renderPage(false);
     }
 
     this.renderPage = function(flag) {
-      var setting = new Setting(array);
-      var currentArray = setting.checkActive();
+      var currentArray = control.checkActive();
       var fragment = document.createDocumentFragment();
       var countItem = currentArray.length;
-      var cntPage = Math.ceil(countItem / cntItem);
+      var cntPage = Math.ceil(countItem / model.cntItem);
       var currentPage = cntPage;
       var activePage = document.querySelector('.paginator .page.active');
       if(activePage) {
@@ -113,8 +112,8 @@ window.onload = function () {
       if (currentPage > cntPage) {
         currentPage = cntPage;
       }
-      while (paginator.firstChild) {
-        paginator.removeChild(paginator.firstChild);
+      while (model.paginator.firstChild) {
+        model.paginator.removeChild(model.paginator.lastChild);
       }
       for (var i = 1; i <= cntPage; i++) {
         var className = (i === currentPage) ? 'page active' : 'page';
@@ -122,18 +121,16 @@ window.onload = function () {
         span.className = className;
         span.id = i + ' page';
         span.textContent = i;
-        paginator.appendChild(span);
+        model.paginator.appendChild(span);
       }
 
-      setting.countTodo();
+      control.countTodo();
       that.render(currentPage);
     }
 
   }
 
-  function Setting(arr) {
-    
-    var renderTodo = new Render(array);
+  function Control(arr) {
     
     this.renderArray = arr;
 
@@ -141,7 +138,7 @@ window.onload = function () {
       var target = event.target;
       if(event.target.classList.contains('deleteButton')){
         var id = Number(target.parentNode.id);
-        array.forEach(function(el, index, arr) {
+        model.array.forEach(function(el, index, arr) {
           if (el.id === id) {
             arr.splice(index, 1);
           }
@@ -151,7 +148,7 @@ window.onload = function () {
     }
 
     this.deleteComplited = function() {
-      array = array.filter(function(el) {
+      model.array = model.array.filter(function(el) {
         return el.isComplited === false;
       });
       renderTodo.renderPage(true);
@@ -161,7 +158,7 @@ window.onload = function () {
       var target = event.target;
       if(target.classList.contains('check')){
         var id = Number(target.parentNode.id);
-        array.forEach(function(el) {
+        model.array.forEach(function(el) {
           if (el.id === id) {
             el.isComplited = el.isComplited === false;
           }
@@ -171,7 +168,7 @@ window.onload = function () {
     }
 
     this.changeStateAll = function () {
-        array.forEach(function(el) {
+      model.array.forEach(function(el) {
           event.target.checked ? el.isComplited = true : el.isComplited = false;
         });
         renderTodo.renderPage(true);
@@ -179,7 +176,7 @@ window.onload = function () {
 
     this.checkActive = function() {
       var activeTab = document.querySelector('.tab.chosen').id;
-        var currentArray = array;
+        var currentArray = model.array;
         if (activeTab === 'selected') {
             currentArray = currentArray.filter(function(el) {
                 return el.isComplited === false;
@@ -193,39 +190,37 @@ window.onload = function () {
     }
 
     this.countTodo = function() {
-      var arrayComplite = array.filter( function(el) {
+      var arrayComplite = model.array.filter( function(el) {
         return el.isComplited === true;
       });
-      counter = arrayComplite.length;
-      var countLeft = array.length - arrayComplite.length;
-      textCountLeft.textContent = countLeft + ' task left';
-      textCount.textContent = counter + ' task done';
-      if (counter > 0 && array.length === counter) {
-        showAll.checked = true;
+      model.counter = arrayComplite.length;
+      var countLeft = model.array.length - arrayComplite.length;
+      model.textCountLeft.textContent = countLeft + ' task left';
+      model.textCount.textContent = model.counter + ' task done';
+      if (model.counter > 0 && model.array.length === model.counter) {
+        model.showAll.checked = true;
       }
        else {
-        showAll.checked = false;
+        model.showAll.checked = false;
       }
     }
   }
 
-
-
-  todoButton.onclick = function() {
+  model.todoButton.onclick = function() {
     renderTodo.newTodo();
     renderTodo.renderPage();
   };
 
-  todoList.onclick = function() {
-    setting.deleteTodo();
+  model.todoList.onclick = function() {
+    control.deleteTodo();
   }
 
-  todoList.onchange = function() {
-    setting.changeState();
+  model.todoList.onchange = function() {
+    control.changeState();
   }
 
-  showAll.onclick = function() {
-    setting.changeStateAll();
+  model.showAll.onclick = function() {
+    control.changeStateAll();
   }
 
   footer.onclick = function(event) {
@@ -236,16 +231,16 @@ window.onload = function () {
         tabs[i].classList.remove('chosen');
       }
       event.target.classList.add('chosen');
-      setting.checkActive();
+      control.checkActive();
       renderTodo.renderPage(true);
     }
   }
 
-  deleteAll.onclick = function() {
-    setting.deleteComplited();
+  model.deleteAll.onclick = function() {
+    control.deleteComplited();
   }
 
-  paginator.onclick = function(event) {
+  model.paginator.onclick = function(event) {
     event.preventDefault();
     if(event.target.classList.contains('page')) {
       var page = this.querySelectorAll('.page');
@@ -256,5 +251,5 @@ window.onload = function () {
       renderTodo.renderPage(true);
     }
   }
-    renderTodo.resume();
+    renderTodo.resume(); // extract state out of the LocalStorage
 };
