@@ -5,8 +5,9 @@ var TodoRow = (function() {
     this.li = createLi(todo.isCompleted);
     
     this.checkbox = createCheckbox(onCompleteClick, this);
-    this.deleteButton = createButton(onDeleteClick, this);
+
     
+    this.deleteButton = createButton(onDeleteClick, this);
     var textNode = createTextNode(todo.text);
 
     this.li.appendChild(this.checkbox);

@@ -2,8 +2,6 @@ import './css/style.css';
 import {Todo} from './todo';
 import {TodoRow} from './todoRow';
 
-
-
 var Application = (function() {
   function Application() {
 
@@ -11,6 +9,7 @@ var Application = (function() {
 
     this.todoArray = [];
     this.defaultCount = 7;
+    this.counter = '';
     this.id = 0;
     this.todoInput = document.getElementById('todo-input');
     this.todoButton = document.getElementById('add-button');
@@ -21,7 +20,6 @@ var Application = (function() {
     this.textCountLeft = document.getElementById('countTodoLeft');
     this.paginator = document.querySelector('.paginator');
     
-
     this.newTodo = function(){
       this.todoInput.focus();
       if (this.todoInput.value.trim()){
@@ -30,6 +28,35 @@ var Application = (function() {
         this.todoInput.value = ('');
         this.id++;
       }
+    }
+
+    this.countTodo = function() {
+     var arrayComplete = this.todoArray.filter( function(el) {
+       return el.isCompleted === true;
+     });
+     this.counter = arrayComplete.length;
+     var countLeft = this.todoArray.length - arrayComplete.length;
+     this.textCountLeft.textContent = countLeft + ' task left';
+     this.textCount.textContent = this.counter + ' task done';
+     if (this.counter > 0 && this.todoArray.length === this.counter) {
+       this.showAll.checked = true;
+     } else {
+       this.showAll.checked = false;
+     }
+   }
+
+    this.changeStateAll = function () {
+      self.todoArray.forEach(function(el) {
+         event.target.checked ? el.isCompleted = true : el.isCompleted = false;
+        });
+        self.render();
+    }
+
+    this.deleteComplited = function() {
+      this.todoArray = this.todoArray.filter(function(el) {
+       return el.isCompleted === false;
+     });
+     self.render();
     }
 
     function deleteTodo(row){
@@ -44,9 +71,9 @@ var Application = (function() {
     }
 
     this.toggeleCompleteTodo = function(row){
-      console.log(1);
       row.todo.isCompleted = !row.todo.isCompleted;
       row.setIsCompleted(row.todo.isCompleted);
+      self.countTodo();
     }
 
     this.render = function(){
@@ -56,19 +83,31 @@ var Application = (function() {
       // var todos = this.getFilteredTodos();
       // this.paging.setLength(todos.length);
       // todos = this.getPagedTodos(todos);
+      var renderArray = this.todoArray.slice(0, this.defaultCount);
       var fragment = document.createDocumentFragment();
-      for(var i = 0; i < this.todoArray.length; i++){
-          var todo = this.todoArray[i];
+      for(var i = 0; i < renderArray.length; i++){
+          var todo = renderArray[i];
           var todoRow = new TodoRow(todo, this.toggeleCompleteTodo, deleteTodo);
           fragment.appendChild(todoRow.li);
       };
       this.todoList.appendChild(fragment);
+      this.countTodo();
     }
+ 
+     this.showAll.onclick = function() {
+       self.changeStateAll();
+     }
+
+     this.deleteAll.onclick = function() {
+      self.deleteComplited();
+     }
 
     this.todoButton.onclick = function() {
       self.newTodo();
       self.render();
     }
+
+
   }
 
   return new Application();
