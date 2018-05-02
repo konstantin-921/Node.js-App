@@ -2,7 +2,7 @@ window.onload = function() {
   var inputName = document.getElementById('name');
   var inputPass = document.getElementById('pass');
   var button = document.getElementById('btn');
-
+  
   function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
       return response
@@ -24,6 +24,8 @@ window.onload = function() {
       userpass: inputPass.value
     };
 
+    console.log('Ok');
+
     fetch('/login', { 
       method: 'POST',
       headers: {
@@ -34,32 +36,11 @@ window.onload = function() {
     })
     .then(checkStatus)
     .then(parseJSON)
-    .then(function(data) {
-      console.log('request succeeded with JSON response', data)
-    }).catch(function(error) {
-      console.log('request failed', error)
+    .then(function(response) {
+      document.location.replace('/home');
+    })
+    .catch(function(error) {
+      document.location.replace('/wtf');
     })
 })
-  // button.addEventListener('click', function() {
-  //   var xhr = new XMLHttpRequest();
-
-  //   xhr.open('POST', '/login');
-  //   var userData = {
-  //     username: inputName.value,
-  //     userpass: inputPass.value
-  //   };
-
-  //   xhr.setRequestHeader('Content-Type', 'application/json');
-  //   xhr.send(JSON.stringify(userData));
-   
-  //   xhr.onload = function() {
-  //     alert(this.responseText);
-  //   };
-
-  //   xhr.onerror = function() {
-  //     alert('Server error');
-  //   }
-  // })
-  
-
 }

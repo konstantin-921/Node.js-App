@@ -1,19 +1,31 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
+var Sequelize = require('sequelize');
 
-var user = {
-   name: 'Chac',
-   pass: 1111
-}
+const sequelize = new Sequelize('postgres', 'postgres', '1111', {
+  dialect: 'postgres',
+  host: 'localhost',
+  port: 5432
+});
 
-function checkUser(req, res) {
-   if(req.body.username === user.name || req.body.userpass === user.pass) {
-      console.log('Ok');
-      res.redirect('/home');
-   } else {
-       res.redirect('/wtf');
+function query(req, res) {
+  sequelize.query("SELECT login FROM users WHERE id =1 ", {type: sequelize.QueryTypes.SELECT})
+  .then(users => {
+    for(var i = 0; i < users.length; i++) {
+      var log = users[i].login;
+    }
+    return log;
+  })
+  .then((log) => {
+    console.log(log);
+    if(log === req.body.username) {
+      console.log('ll');
    }
+  })
+  .catch(() => {
+    console.log('Error');
+  })
 }
 
 app.use(express.static('public'));
@@ -29,19 +41,17 @@ app.get('/', function (req, res) {
 });
 
 app.get('/home', function (req, res) {
-   res.send('Login successful!');
+  res.send(JSON.stringify("Login successful!"));
 });
 
 app.get('/wtf', function (req, res) {
-   res.send('Login error');
+   res.send(JSON.stringify("Login error"));
 });
 
 app.post('/login', function (req, res) {
-
-   checkUser(req, res);
+   query(req, res);
    console.log(req.body);
 });
-
 app.listen(3000, function () {
  console.log('Example app listening on port 3000!');
 });
