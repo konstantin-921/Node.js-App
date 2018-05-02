@@ -14,7 +14,7 @@ window.onload = function() {
   }
 
   function parseJSON(response) {
-    return response.json()
+    return response.json();
     }
 
   button.addEventListener('click', function() {

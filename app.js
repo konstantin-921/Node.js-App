@@ -18,13 +18,14 @@ function query(req, res) {
     return log;
   })
   .then((log) => {
-    console.log(log);
     if(log === req.body.username) {
-      console.log('ll');
+      console.log('Go');
+      res.send(JSON.stringify("Login successful!"))
    }
   })
   .catch(() => {
     console.log('Error');
+    res.send(JSON.stringify("Login NOT successful!"))
   })
 }
 
