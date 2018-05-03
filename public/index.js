@@ -2,6 +2,9 @@ window.onload = function() {
   var inputName = document.getElementById('name');
   var inputPass = document.getElementById('pass');
   var button = document.getElementById('btn');
+  var inputNameSign = document.getElementById('nameSign');
+  var inputPassSign = document.getElementById('passSign');
+  var buttonSign = document.getElementById('btnSign');
   
   function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
@@ -24,8 +27,6 @@ window.onload = function() {
       userpass: inputPass.value
     };
 
-    console.log('Ok');
-
     fetch('/login', { 
       method: 'POST',
       headers: {
@@ -42,5 +43,33 @@ window.onload = function() {
     .catch(function(error) {
       document.location.replace('/wtf');
     })
-})
+  })
+
+  buttonSign.addEventListener('click', function() {
+    
+    var userSignUp = {
+      username: inputNameSign.value,
+      userpass: inputPassSign.value
+    }
+
+    console.log('Ok');
+
+    fetch('/registred', { 
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(userSignUp),
+      redirect: 'follow'
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(function(response) {
+      document.location.replace('/success');
+    })
+    .catch(function(error) {
+      document.location.replace('/wtf');
+    })
+
+  })
 }
