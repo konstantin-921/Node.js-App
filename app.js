@@ -78,6 +78,8 @@ function query(req, res) {
       var token = jwt.sign(payload, jwtOptions.secretOrKey);
       res.json({message: "ok", token: token});
     // console.log(token);
+    } else {
+      res.status(401).json({message:"passwords did not match"});
     }
   })
   .catch((error) => {

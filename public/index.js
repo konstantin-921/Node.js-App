@@ -47,10 +47,10 @@ window.onload = function() {
     .then(parseJSON)
     .then(function(response) {
       saveToken(response);
-      document.location.replace('/secret');
+      // document.location.replace('/secret');
     })
     .catch(function(error) {
-      document.location.replace('/wtf');
+      // document.location.replace('/wtf');
     })
   })
 
