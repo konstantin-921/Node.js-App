@@ -23,9 +23,9 @@ jwtOptions.secretOrKey = 'tasmanianDevil';
 
 var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
   console.log('payload received', jwt_payload);
-  sequelize.query("SELECT id, name, password FROM users", {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT * FROM users WHERE name = '${req.body.username}'`, {type: sequelize.QueryTypes.SELECT})
   .then((users) => {
-    var user = users[_.findIndex(users, {id: jwt_payload.id})];
+    var user = users[0];
     if (user) {
       next(null, user);
     } else {
@@ -68,16 +68,16 @@ app.post('/registred', function (req, res) {
 });
 
 function query(req, res) {
-  sequelize.query("SELECT id, name, password FROM users", {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT * FROM users WHERE name = '${req.body.username}'`, {type: sequelize.QueryTypes.SELECT})
   .then((users) => {
-    var user = users[_.findIndex(users, {name: req.body.username, password: Number(req.body.userpass)})];
-    
-    if(user.password === Number(req.body.userpass)) {
-    // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
-      var payload = {id: user.id};
+
+    var user = users[0];
+   
+    if(user.password === req.body.userpass) {
+      var payload = {user: user.id};
       var token = jwt.sign(payload, jwtOptions.secretOrKey);
       res.json({message: "ok", token: token});
-    console.log(token);
+    // console.log(token);
     }
   })
   .catch((error) => {
@@ -86,7 +86,7 @@ function query(req, res) {
 }
 
 function querySignUp(req, res) {
-  sequelize.query("CREATE TABLE IF NOT EXISTS users (id serial PRIMARY KEY, name text, password integer);")
+  sequelize.query("CREATE TABLE IF NOT EXISTS users (id serial PRIMARY KEY, name text, password text);")
   .then(() => {
     sequelize.query(`INSERT INTO users (name, password) VALUES ('${req.body.username}', ${req.body.userpass})`)
   })

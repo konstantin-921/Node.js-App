@@ -8,6 +8,7 @@ window.onload = function() {
   
   function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
+      
       return response
     } else {
       var error = new Error(response.statusText)
@@ -16,11 +17,17 @@ window.onload = function() {
     }
   }
 
+  function saveToken(response) {
+    var token = response.token;
+    localStorage['token.id'] = token;
+  }
+
   function parseJSON(response) {
     return response.json();
     }
 
-  button.addEventListener('click', function() {
+  button.addEventListener('click', function(event) {
+    event.preventDefault();
 
     var userData = {
       username: inputName.value,
@@ -30,7 +37,8 @@ window.onload = function() {
     fetch('/login', { 
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `JWT ${localStorage['token.id']}`
       },
       body: JSON.stringify(userData),
       redirect: 'follow'
@@ -38,15 +46,17 @@ window.onload = function() {
     .then(checkStatus)
     .then(parseJSON)
     .then(function(response) {
-      document.location.replace('/home');
+      saveToken(response);
+      document.location.replace('/secret');
     })
     .catch(function(error) {
       document.location.replace('/wtf');
     })
   })
 
-  buttonSign.addEventListener('click', function() {
-    
+  buttonSign.addEventListener('click', function(event) {
+    event.preventDefault();
+
     var userSignUp = {
       username: inputNameSign.value,
       userpass: inputPassSign.value
