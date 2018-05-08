@@ -23,7 +23,7 @@ jwtOptions.secretOrKey = 'tasmanianDevil';
 
 var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
   console.log('payload received', jwt_payload);
-  sequelize.query(`SELECT * FROM users WHERE name = '${req.body.username}'`, {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT * FROM users WHERE id = '${jwt_payload.id}'`, {type: sequelize.QueryTypes.SELECT})
   .then((users) => {
     var user = users[0];
     if (user) {

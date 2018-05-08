@@ -38,7 +38,7 @@ window.onload = function() {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `JWT ${localStorage['token.id']}`
+        "Authorization": `bearer ${localStorage['token.id']}`
       },
       body: JSON.stringify(userData),
       redirect: 'follow'
@@ -47,6 +47,7 @@ window.onload = function() {
     .then(parseJSON)
     .then(function(response) {
       saveToken(response);
+      console.log(response);
       // document.location.replace('/secret');
     })
     .catch(function(error) {
