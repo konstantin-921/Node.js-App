@@ -7,6 +7,7 @@ var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var passportJWT = require("passport-jwt");
 
+
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
 
@@ -23,7 +24,7 @@ jwtOptions.secretOrKey = 'tasmanianDevil';
 
 var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
   console.log('payload received', jwt_payload);
-  sequelize.query(`SELECT * FROM users WHERE id = '${jwt_payload.id}'`, {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT * FROM users WHERE id = '${jwt_payload.user}'`, {type: sequelize.QueryTypes.SELECT})
   .then((users) => {
     var user = users[0];
     if (user) {
@@ -36,10 +37,9 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
 
 passport.use(strategy);
 
-
 app.use(passport.initialize());
 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -59,8 +59,9 @@ app.post('/login', function (req, res) {
    query(req, res);
 });
 
-app.get("/secret", passport.authenticate('jwt', { session: false }), function(req, res){
-  res.json("Success! You can not see this without a token");
+app.post('/secret', passport.authenticate('jwt', { session: false}), function(req, res){
+  // res.json("Success! You can not see this without a token");
+  res.redirect(__dirname + '/public/secret.html');
 });
 
 app.post('/registred', function (req, res) {
@@ -68,7 +69,7 @@ app.post('/registred', function (req, res) {
 });
 
 function query(req, res) {
-  sequelize.query(`SELECT * FROM users WHERE name = '${req.body.username}'`, {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT * FROM users WHERE name = '${req.body.username}' and password = '${req.body.userpass}'`, {type: sequelize.QueryTypes.SELECT})
   .then((users) => {
 
     var user = users[0];
@@ -77,7 +78,7 @@ function query(req, res) {
       var payload = {user: user.id};
       var token = jwt.sign(payload, jwtOptions.secretOrKey);
       res.json({message: "ok", token: token});
-    // console.log(token);
+    console.log(payload);
     } else {
       res.status(401).json({message:"passwords did not match"});
     }

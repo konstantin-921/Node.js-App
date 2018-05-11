@@ -5,10 +5,10 @@ window.onload = function() {
   var inputNameSign = document.getElementById('nameSign');
   var inputPassSign = document.getElementById('passSign');
   var buttonSign = document.getElementById('btnSign');
+
   
   function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
-      
       return response
     } else {
       var error = new Error(response.statusText)
@@ -26,6 +26,14 @@ window.onload = function() {
     return response.json();
     }
 
+  // function myFetch(url, options) {
+  //     var options = options || {};
+  //     options.headers = options.headers || {};
+  //     options.headers['Authorization'] = `bearer ${localStorage['token.id']}`;
+  //     options.headers['Content-Type'] = "application/json";
+  //     return fetch(url, options);
+  // }
+
   button.addEventListener('click', function(event) {
     event.preventDefault();
 
@@ -34,11 +42,12 @@ window.onload = function() {
       userpass: inputPass.value
     };
 
+    // myFetch();
+
     fetch('/login', { 
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `bearer ${localStorage['token.id']}`
       },
       body: JSON.stringify(userData),
       redirect: 'follow'
@@ -48,11 +57,34 @@ window.onload = function() {
     .then(function(response) {
       saveToken(response);
       console.log(response);
-      // document.location.replace('/secret');
     })
     .catch(function(error) {
       // document.location.replace('/wtf');
     })
+    
+    
+    if(localStorage['token.id']) {
+
+      fetch('/secret', { 
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `bearer ${localStorage['token.id']}`
+        },
+        body: JSON.stringify(userData),
+        redirect: 'follow'
+      })
+      .then(checkStatus)
+      .then(parseJSON)
+      .then(function(response) {
+        console.log(response);
+      })
+      .catch(function(error) { 
+        console.log('invalid');
+      })
+    } else {
+      console.log('Token error');
+    }
   })
 
   buttonSign.addEventListener('click', function(event) {
