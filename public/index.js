@@ -1,3 +1,5 @@
+// import {ApiFetch} from '/scripts/apiFetch';
+
 window.onload = function() {
   var inputName = document.getElementById('name');
   var inputPass = document.getElementById('pass');
@@ -5,6 +7,19 @@ window.onload = function() {
   var inputNameSign = document.getElementById('nameSign');
   var inputPassSign = document.getElementById('passSign');
   var buttonSign = document.getElementById('btnSign');
+  
+
+  function ApiFetch(token) {
+    this.token = token;
+    this.get = function(url, options) {
+      var options = options || {};
+      options.headers = options.headers || {};
+      options.headers["Authorization"] = "bearer " + this.token;
+      return fetch(url, options);
+    }
+  }
+
+  var api = new ApiFetch(localStorage['token.id']);
 
   
   function checkStatus(response) {
@@ -26,13 +41,6 @@ window.onload = function() {
     return response.json();
     }
 
-  // function myFetch(url, options) {
-  //     var options = options || {};
-  //     options.headers = options.headers || {};
-  //     options.headers['Authorization'] = `bearer ${localStorage['token.id']}`;
-  //     options.headers['Content-Type'] = "application/json";
-  //     return fetch(url, options);
-  // }
 
   button.addEventListener('click', function(event) {
     event.preventDefault();
@@ -41,8 +49,6 @@ window.onload = function() {
       username: inputName.value,
       userpass: inputPass.value
     };
-
-    // myFetch();
 
     fetch('/login', { 
       method: 'POST',
@@ -58,18 +64,11 @@ window.onload = function() {
       saveToken(response);
       console.log(response);
     })
-    .catch(function(error) {
-      // document.location.replace('/wtf');
-    })
-    
-    
-    if(localStorage['token.id']) {
-
-      fetch('/secret', { 
+    .then(function(response) {
+      api.get('/secret', { 
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `bearer ${localStorage['token.id']}`
         },
         body: JSON.stringify(userData),
         redirect: 'follow'
@@ -77,15 +76,28 @@ window.onload = function() {
       .then(checkStatus)
       .then(parseJSON)
       .then(function(response) {
-        console.log(response);
+        api.get('/home', { 
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          redirect: 'follow'
+        })
+        .then(function(response) {
+          document.location.replace('/home');
+        })
+        .catch(function(error) { 
+          console.log('invalid');
+        })
       })
       .catch(function(error) { 
         console.log('invalid');
       })
-    } else {
-      console.log('Token error');
-    }
-  })
+    })
+    .catch(function(error) {
+      // document.location.replace('/wtf');
+    })
+  });
 
   buttonSign.addEventListener('click', function(event) {
     event.preventDefault();

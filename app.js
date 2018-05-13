@@ -7,7 +7,6 @@ var jwt = require('jsonwebtoken');
 var passport = require('passport');
 var passportJWT = require("passport-jwt");
 
-
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
 
@@ -37,6 +36,12 @@ var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
 
 passport.use(strategy);
 
+app.use(function(req, res, next) {
+  var auth = req.get('Authorization');
+  console.log(auth);
+  next();
+})
+
 app.use(passport.initialize());
 
 app.use(express.static(__dirname + '/public'));
@@ -48,20 +53,20 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.get('/home', function (req, res) {
-  res.send(JSON.stringify("Login successful!"));
+  res.sendFile(__dirname + '/public/home.html');
 });
 
 app.get('/wtf', function (req, res) {
    res.send(JSON.stringify("Error"));
 });
 
+
 app.post('/login', function (req, res) {
    query(req, res);
 });
 
 app.post('/secret', passport.authenticate('jwt', { session: false}), function(req, res){
-  // res.json("Success! You can not see this without a token");
-  res.redirect(__dirname + '/public/secret.html');
+  res.json("Success! You can not see this without a token");
 });
 
 app.post('/registred', function (req, res) {
