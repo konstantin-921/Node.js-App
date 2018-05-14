@@ -1,0 +1,78 @@
+h1 {
+  color: darkolivegreen;
+  text-align: center;
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  border: 1px solid silver;
+}
+
+.find-friends {
+  display: block;
+  margin: 0 auto;
+  width: 200px;
+  height: 20px;
+  font-size: 24px;
+}
+
+.container-block {
+  display: flex;
+}
+
+.block {
+  background-color: #fff;
+}
+
+.block-left {
+  width: 30%;
+  height: 100vh;
+}
+
+.block-right {
+  width: 70%;
+  height: 100vh;
+}
+.block-left .btn {
+  display: block;
+  margin: 5px;
+  width: 100px;
+}
+
+.newpost {
+  margin-top: 10px;
+  border: 1px dotted darkolivegreen;
+}
+
+.newtitle {
+  display: block;
+  width: 50%;
+  height: 20px;
+  margin: 0 auto;
+}
+
+.newdate {
+  width: 100px;
+  color: darkolivegreen;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.area {
+  display: block;
+  min-width: 90%;
+  max-width: 90%;
+  min-height: 250px;
+  margin: 10px auto;
+}
+
+.savebutton {
+  display: block;
+  width: 60px;
+  height: 20px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+

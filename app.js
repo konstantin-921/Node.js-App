@@ -10,7 +10,6 @@ var passportJWT = require("passport-jwt");
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
 
-
 const sequelize = new Sequelize('app', 'nodejs', '1111', {
   dialect: 'postgres',
   host: 'localhost',
@@ -38,7 +37,7 @@ passport.use(strategy);
 
 app.use(function(req, res, next) {
   var auth = req.get('Authorization');
-  console.log(auth);
+  // console.log(auth);
   next();
 })
 
@@ -56,10 +55,13 @@ app.get('/home', function (req, res) {
   res.sendFile(__dirname + '/public/home.html');
 });
 
+app.post('/newpost', function(req, res) {
+  console.log(req.body);
+})
+
 app.get('/wtf', function (req, res) {
    res.send(JSON.stringify("Error"));
 });
-
 
 app.post('/login', function (req, res) {
    query(req, res);
@@ -94,9 +96,9 @@ function query(req, res) {
 }
 
 function querySignUp(req, res) {
-  sequelize.query("CREATE TABLE IF NOT EXISTS users (id serial PRIMARY KEY, name text, password text);")
+  sequelize.query("CREATE TABLE IF NOT EXISTS users (id serial PRIMARY KEY, name text, password text, email text, avatar bytea);")
   .then(() => {
-    sequelize.query(`INSERT INTO users (name, password) VALUES ('${req.body.username}', ${req.body.userpass})`)
+    sequelize.query(`INSERT INTO users (name, password, email) VALUES ('${req.body.username}', ${req.body.userpass}, '${req.body.useremail}')`)
   })
 }
 
