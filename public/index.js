@@ -1,38 +1,26 @@
 window.onload = function() {
-  var inputName = document.getElementById('name');
-  var inputPass = document.getElementById('pass');
-  var btn = document.getElementById('btn');
-  var inputNameSign = document.getElementById('nameUp');
-  var inputPassSign = document.getElementById('passUp');
-  var inputEmailSign = document.getElementById('emailUp');
-  var buttonSign = document.getElementById('btnUp');
-  var buttonMypost = document.getElementById('mypostBtn');
-  var buttonAddpost = document.getElementById('addpostBtn');
-  var buttonPosts = document.getElementById('postsBtn');
-  var blockRight = document.getElementById('block-right');
+  const inputName = document.getElementById('name');
+  const inputPass = document.getElementById('pass');
+  const btn = document.getElementById('btn');
+  const inputNameSign = document.getElementById('nameUp');
+  const inputPassSign = document.getElementById('passUp');
+  const inputEmailSign = document.getElementById('emailUp');
+  const buttonSign = document.getElementById('btnUp');
+  const buttonMypost = document.getElementById('mypostBtn');
+  const buttonAddpost = document.getElementById('addpostBtn');
+  const buttonPosts = document.getElementById('postsBtn');
+  const blockRight = document.getElementById('block-right');
 
-  function ApiFetch(token) {
-    this.token = token;
-    this.get = function(url, options) {
-      var options = options || {};
-      options.headers = options.headers || {};
-      options.headers["Authorization"] = "bearer " + this.token;
-      return fetch(url, options);
-    }
-  }
-
-  var api = new ApiFetch(localStorage['token.id']);
-  
   function currentDate() {
-    var date = new Date();
+    let date = new Date();
     const DAYNAMES = ["Monday", "Tuesday", "Wednesday", "Thursday",  "Friday", "Saturday", "Sunday"];
-    var day = date.getDay();
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
+    let day = date.getDay();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
     if(minutes <= 9) {
       minutes = "0" + minutes;
     }
-    var newDate = DAYNAMES[day -1] + "  " + hours + ":" + minutes;
+    let newDate = DAYNAMES[day -1] + "  " + hours + ":" + minutes;
     
     return newDate;
   }
@@ -41,14 +29,14 @@ window.onload = function() {
     if (response.status >= 200 && response.status < 300) {
       return response
     } else {
-      var error = new Error(response.statusText)
+      let error = new Error(response.statusText)
       error.response = response
       throw error
     }
   }
 
   function saveToken(response) {
-    var token = response.token;
+    let token = response.token;
     localStorage['token.id'] = token;
   }
 
@@ -60,7 +48,7 @@ window.onload = function() {
     btn.addEventListener('click', function(event) {
       event.preventDefault();
 
-      var userData = {
+      let userData = {
         username: inputName.value,
         userpass: inputPass.value
       };
@@ -80,7 +68,8 @@ window.onload = function() {
         console.log(response);
       })
       .then(function(response) {
-        api.get('/secret', { 
+
+        ApiFetch.get('/secret', { 
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -91,7 +80,7 @@ window.onload = function() {
         .then(checkStatus)
         .then(parseJSON)
         .then(function(response) {
-          api.get('/home', { 
+          ApiFetch.get('/home', { 
             method: 'GET',
             headers: {
               "Content-Type": "application/json",
@@ -106,7 +95,7 @@ window.onload = function() {
           })
         })
         .catch(function(error) { 
-          console.log('invalid');
+          console.log('Token not verify');
         })
       })
       .catch(function(error) {
@@ -119,7 +108,7 @@ window.onload = function() {
     buttonSign.addEventListener('click', function(event) {
       event.preventDefault();
 
-      var userSignUp = {
+      let userSignUp = {
         username: inputNameSign.value,
         userpass: inputPassSign.value,
         useremail: inputEmailSign.value
@@ -148,22 +137,22 @@ window.onload = function() {
     buttonAddpost.addEventListener('click', function(event) {
       event.preventDefault();
 
-      var post = document.createElement('div');
+      const post = document.createElement('div');
       post.id = 'newPost';
       post.className = 'newpost';
-      var date = document.createElement('div');
+      const date = document.createElement('div');
       date.id = 'newDate';
       date.className = 'newdate';
       date.textContent = currentDate();
-      var title = document.createElement('input');
+      const title = document.createElement('input');
       title.id = 'newTitle';
       title.className = 'newtitle';
       title.placeholder = 'Enter title';
-      var area = document.createElement('textarea');
+      const area = document.createElement('textarea');
       area.id = 'area';
       area.className = 'area';
       area.placeholder = 'Enter text of posts';
-      var saveButton = document.createElement('button');
+      const saveButton = document.createElement('button');
       saveButton.id = 'savebutton';
       saveButton.className = 'savebutton';
       saveButton.textContent = 'Save';
@@ -178,13 +167,13 @@ window.onload = function() {
       if(saveButton) {
         saveButton.addEventListener('click', function(event) {
 
-          var userPost = {
+          let userPost = {
             postTitle: title.value,
             postDate: date.textContent,
             postArea: area.value
           }
 
-          api.get('/newpost', { 
+          ApiFetch.get('/newpost', { 
             method: 'POST',
             headers: {
               "Content-Type": "application/json",

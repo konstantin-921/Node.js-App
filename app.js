@@ -1,14 +1,13 @@
-var _ = require("lodash");
-var express = require('express');
-var bodyParser = require('body-parser')
-var app = express();
-var Sequelize = require('sequelize');
-var jwt = require('jsonwebtoken');
-var passport = require('passport');
-var passportJWT = require("passport-jwt");
+const _ = require("lodash");
+const express = require('express');
+const bodyParser = require('body-parser')
+const app = express();
+const Sequelize = require('sequelize');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const strategy = require("./strategy.js");
+let currentUser = '';
 
-var ExtractJwt = passportJWT.ExtractJwt;
-var JwtStrategy = passportJWT.Strategy;
 
 const sequelize = new Sequelize('app', 'nodejs', '1111', {
   dialect: 'postgres',
@@ -16,29 +15,24 @@ const sequelize = new Sequelize('app', 'nodejs', '1111', {
   port: 5432
 });
 
-var jwtOptions = {}
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-jwtOptions.secretOrKey = 'tasmanianDevil';
-
-var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
-  console.log('payload received', jwt_payload);
-  sequelize.query(`SELECT * FROM users WHERE id = '${jwt_payload.user}'`, {type: sequelize.QueryTypes.SELECT})
-  .then((users) => {
-    var user = users[0];
-    if (user) {
-      next(null, user);
-    } else {
-      next(null, false);
-    }
-   });
-  });
-
-passport.use(strategy);
-
 app.use(function(req, res, next) {
-  var auth = req.get('Authorization');
-  // console.log(auth);
-  next();
+  let auth = req.get('Authorization');
+  const excluded = ['/', '/login', '/secret', '/registred'];
+
+  if(auth && excluded.indexOf(req.url) > -1) {
+    let token = auth.substring(7);
+    
+      jwt.verify(token, 'tasmanianDevil', {ignoreExpiration: false}, function(err, decoded) {
+        console.log(decoded.user);
+          if(!!(decoded.user)) {
+            return next();
+          } else if(err) {
+            res.status(401).json({message:"token not verify"});
+          }
+      });
+  } else {
+    next();
+  }
 })
 
 app.use(passport.initialize());
@@ -56,7 +50,7 @@ app.get('/home', function (req, res) {
 });
 
 app.post('/newpost', function(req, res) {
-  console.log(req.body);
+  savePost(req, res);
 })
 
 app.get('/wtf', function (req, res) {
@@ -78,12 +72,12 @@ app.post('/registred', function (req, res) {
 function query(req, res) {
   sequelize.query(`SELECT * FROM users WHERE name = '${req.body.username}' and password = '${req.body.userpass}'`, {type: sequelize.QueryTypes.SELECT})
   .then((users) => {
-
-    var user = users[0];
-   
+    let user = users[0];
+    currentUser = user.id;
+    
     if(user.password === req.body.userpass) {
-      var payload = {user: user.id};
-      var token = jwt.sign(payload, jwtOptions.secretOrKey);
+      let payload = {user: user.id};
+      let token = jwt.sign(payload, strategy.jwtOptions.secretOrKey, {expiresIn: '1h'});
       res.json({message: "ok", token: token});
     console.log(payload);
     } else {
@@ -99,6 +93,13 @@ function querySignUp(req, res) {
   sequelize.query("CREATE TABLE IF NOT EXISTS users (id serial PRIMARY KEY, name text, password text, email text, avatar bytea);")
   .then(() => {
     sequelize.query(`INSERT INTO users (name, password, email) VALUES ('${req.body.username}', ${req.body.userpass}, '${req.body.useremail}')`)
+  })
+}
+
+function savePost(req, res) {
+  sequelize.query("CREATE TABLE IF NOT EXISTS posts (id serial PRIMARY KEY, content text, date text, title text, user_id text);")
+  .then(() => {
+    sequelize.query(`INSERT INTO posts (content, date, title, user_id) VALUES ('${req.body.postArea}', '${req.body.postDate}', '${req.body.postTitle}', '${currentUser}')`)
   })
 }
 
