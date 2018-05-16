@@ -23,7 +23,6 @@ app.use(function(req, res, next) {
     let token = auth.substring(7);
     
       jwt.verify(token, 'tasmanianDevil', {ignoreExpiration: false}, function(err, decoded) {
-        console.log(decoded.user);
           if(!!(decoded.user)) {
             return next();
           } else if(err) {
@@ -53,6 +52,18 @@ app.post('/newpost', function(req, res) {
   savePost(req, res);
 })
 
+app.get('/mypost', function(req, res) {
+  sendPosts(req, res);
+})
+
+app.get('/friendspost', function(req, res) {
+  sendFriendsPosts(req, res);
+})
+
+app.post('/finduser', function(req, res) {
+  findUser(req, res);
+})
+
 app.get('/wtf', function (req, res) {
    res.send(JSON.stringify("Error"));
 });
@@ -79,7 +90,6 @@ function query(req, res) {
       let payload = {user: user.id};
       let token = jwt.sign(payload, strategy.jwtOptions.secretOrKey, {expiresIn: '1h'});
       res.json({message: "ok", token: token});
-    console.log(payload);
     } else {
       res.status(401).json({message:"passwords did not match"});
     }
@@ -100,6 +110,26 @@ function savePost(req, res) {
   sequelize.query("CREATE TABLE IF NOT EXISTS posts (id serial PRIMARY KEY, content text, date text, title text, user_id text);")
   .then(() => {
     sequelize.query(`INSERT INTO posts (content, date, title, user_id) VALUES ('${req.body.postArea}', '${req.body.postDate}', '${req.body.postTitle}', '${currentUser}')`)
+  })
+}
+
+function sendPosts(req, res) {
+  sequelize.query(`SELECT * FROM posts WHERE user_id = '${currentUser}'`, {type: sequelize.QueryTypes.SELECT})
+  .then((posts) => {
+    res.json(posts);
+  })
+}
+
+function sendFriendsPosts(req, res) {
+  res.json('Oops');
+}
+
+function findUser(req, res) {
+  let letter = req.body.letter;
+  console.log(letter);
+  sequelize.query(`SELECT * FROM users WHERE name LIKE '${letter}%'`, {type: sequelize.QueryTypes.SELECT})
+  .then((users) => {
+    res.json(users);
   })
 }
 
