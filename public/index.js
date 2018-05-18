@@ -12,11 +12,29 @@ window.onload = function() {
   const buttonPosts = document.getElementById('postsBtn');
   const blockRight = document.getElementById('block-right');
 
+  function checkStatus(response) {
+    if (response.status >= 200 && response.status < 300) {
+      return response
+    } else {
+      let error = new Error(response.statusText)
+      error.response = response
+      throw error
+    }
+  }
+
+  function saveToken(response) {
+    let token = response.token;
+    localStorage['token.id'] = token;
+  }
+
+  function parseJSON(response) {
+    return response.json();
+  }
+
 
   function findUsers(code) {
-    let result = String.fromCharCode(code);
     let keyCode = {
-      letter: result
+      letter: code
     };
     ApiFetch.get('/finduser', { 
       method: 'POST',
@@ -35,9 +53,9 @@ window.onload = function() {
       listUsers.className = 'list-users';
 
       for(var i = 0; i < response.length; i++){
-        console.log(response[i].name);
         let userName = response[i].name;
-        let listItem = new CreateListUser(userName);
+        let userId = response[i].id
+        let listItem = new CreateListUser(userName, userId);
         listUsers.appendChild(listItem.item);
       };
 
@@ -66,25 +84,6 @@ window.onload = function() {
     
     return newDate;
   }
-
-  function checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return response
-    } else {
-      let error = new Error(response.statusText)
-      error.response = response
-      throw error
-    }
-  }
-
-  function saveToken(response) {
-    let token = response.token;
-    localStorage['token.id'] = token;
-  }
-
-  function parseJSON(response) {
-    return response.json();
-    }
 
   if(btn) {
     btn.addEventListener('click', function(event) {
@@ -254,12 +253,10 @@ window.onload = function() {
           list.className = 'list';
 
           for(var i = 0; i < response.length; i++){
-            console.log(response[i].date);
             let content = response[i].content;
             let title = response[i].title;
             let date = response[i].date;
             var newPost = new Post(content, title, date);
-            console.log(newPost);
             list.appendChild(newPost.elem);
           };
           
@@ -289,12 +286,26 @@ window.onload = function() {
       .then(checkStatus)
       .then(parseJSON)
       .then(function(response) {
-
-        console.log(response);
+        
         const listFriends = document.createElement('ul');
         listFriends.id = 'listFriends';
         listFriends.className = 'list-friends';
 
+        for(var i = 0; i < response.length; i++){
+          let id = response[i].user_id;
+          let content = response[i].content;
+          let title = response[i].title;
+          let date = response[i].date;
+          var newPost = new Post(content, title, date, id);
+          listFriends.appendChild(newPost.elem);
+        }
+
+        while(blockRight.lastChild){
+          blockRight.removeChild(blockRight.lastChild);
+        }
+
+        blockRight.appendChild(listFriends);
+        
       })
       .catch(function(error) {
         console.log(error);
@@ -303,12 +314,10 @@ window.onload = function() {
   }
 
   if(inputFind) {
-    inputFind.addEventListener('keypress', function(event) {
-      if (event.keyCode >= 48 && this.value.length < 1) {
-        var realFunction = _.debounce(findUsers, 500);
-        realFunction(event.keyCode);
-      } else if(event.keyCode === 8) {
-        console.log('Space');
+    inputFind.addEventListener('input', function(event) {
+      if (this.value) {
+        findUsers(this.value);
+      } else if(this.value === '') {
         while(blockRight.lastChild){
           blockRight.removeChild(blockRight.lastChild);
         }
@@ -316,6 +325,8 @@ window.onload = function() {
     })
   }
 
+
+  
 }
 
 

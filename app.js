@@ -1,4 +1,3 @@
-const _ = require("lodash");
 const express = require('express');
 const bodyParser = require('body-parser')
 const app = express();
@@ -60,8 +59,24 @@ app.get('/friendspost', function(req, res) {
   sendFriendsPosts(req, res);
 })
 
+app.post('/teststate', function(req, res) {
+  teststate(req, res);
+})
+
+app.post('/getusername', function(req, res) {
+  getusername(req, res);
+})
+
 app.post('/finduser', function(req, res) {
   findUser(req, res);
+})
+
+app.post('/follow', function(req, res) {
+  followUser(req, res);
+})
+
+app.post('/deletefollow', function(req, res) {
+  deletefollow(req, res);
 })
 
 app.get('/wtf', function (req, res) {
@@ -88,7 +103,7 @@ function query(req, res) {
     
     if(user.password === req.body.userpass) {
       let payload = {user: user.id};
-      let token = jwt.sign(payload, strategy.jwtOptions.secretOrKey, {expiresIn: '1h'});
+      let token = jwt.sign(payload, strategy.jwtOptions.secretOrKey, {expiresIn: '30h'});
       res.json({message: "ok", token: token});
     } else {
       res.status(401).json({message:"passwords did not match"});
@@ -104,12 +119,18 @@ function querySignUp(req, res) {
   .then(() => {
     sequelize.query(`INSERT INTO users (name, password, email) VALUES ('${req.body.username}', ${req.body.userpass}, '${req.body.useremail}')`)
   })
+  .catch((error) => {
+    console.log(error);
+  })
 }
 
 function savePost(req, res) {
-  sequelize.query("CREATE TABLE IF NOT EXISTS posts (id serial PRIMARY KEY, content text, date text, title text, user_id text);")
+  sequelize.query("CREATE TABLE IF NOT EXISTS posts (id serial PRIMARY KEY, content text, date text, title text, user_id integer);")
   .then(() => {
     sequelize.query(`INSERT INTO posts (content, date, title, user_id) VALUES ('${req.body.postArea}', '${req.body.postDate}', '${req.body.postTitle}', '${currentUser}')`)
+  })
+  .catch((error) => {
+    console.log(error);
   })
 }
 
@@ -118,19 +139,65 @@ function sendPosts(req, res) {
   .then((posts) => {
     res.json(posts);
   })
+  .catch((error) => {
+    console.log(error);
+  })
 }
 
 function sendFriendsPosts(req, res) {
-  res.json('Oops');
+  sequelize.query(`SELECT *  FROM posts WHERE user_id IN (SELECT following FROM followers WHERE follower = ${currentUser})`, {type: sequelize.QueryTypes.SELECT})
+    .then((users) => {
+       res.json(users);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
 }
 
 function findUser(req, res) {
   let letter = req.body.letter;
-  console.log(letter);
-  sequelize.query(`SELECT * FROM users WHERE name LIKE '${letter}%'`, {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT name, id FROM users WHERE name LIKE '${letter}%'`, {type: sequelize.QueryTypes.SELECT})
   .then((users) => {
     res.json(users);
   })
+  .catch((error) => {
+    console.log(error);
+  })
+}
+
+function teststate(req, res) {
+  sequelize.query(`SELECT follower, following FROM followers WHERE follower = '${currentUser}' and following = '${req.body.id}'`, {type: sequelize.QueryTypes.SELECT})
+  .then((followers) => {
+    console.log(followers);
+    if(followers[0].follower) {
+      res.json(followers);
+    } 
+  })
+  .catch((error) => {
+    console.log(error);
+  })
+}
+
+function followUser(req, res) {
+    sequelize.query("CREATE TABLE IF NOT EXISTS followers (id serial, follower integer, following integer, PRIMARY KEY(follower, following), FOREIGN KEY(follower) REFERENCES users(id), FOREIGN KEY(following) REFERENCES posts(id));")
+    .then((followers) => {
+        sequelize.query(`INSERT INTO followers (follower, following) VALUES ('${currentUser}', '${req.body.id}')`)
+    })
+    .catch((error) => {
+      console.log('Error');
+    })
+}
+
+function deletefollow(req, res) {
+  sequelize.query(`DELETE FROM followers WHERE following = '${req.body.id}'`)
+}
+
+function getusername(req, res) {
+  sequelize.query(`SELECT name FROM users WHERE id = '${req.body.id}'`, {type: sequelize.QueryTypes.SELECT})
+  .then((users) => {
+    res.json(users);
+  })
+
 }
 
 app.listen(3000, function () {
