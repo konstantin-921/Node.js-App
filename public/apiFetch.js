@@ -2,23 +2,19 @@ const ApiFetch = (function() {
   const token = localStorage.getItem('token.id');
   
   function ApiFetch() {
-    this.token = token;
     this.get = function(url, options) {
       var options = options || {};
       options.headers = options.headers || {};
-      options.headers["Authorization"] = "bearer " + this.token;
+      options.headers["Authorization"] = "bearer " + localStorage.getItem('token.id');
       return fetch(url, options);
     }
   }
 
-  if (!!token) {
-    return new ApiFetch;
-  } 
-  else {
-    if (window.location.pathname !== '/') {
+    if (!token && window.location.pathname !== '/') {
       window.location.replace('/');
     }
-    return ApiFetch;
-  }
+
+  return new ApiFetch;
+
 }) ()
 

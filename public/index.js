@@ -11,7 +11,7 @@ window.onload = function() {
   const buttonAddpost = document.getElementById('addpostBtn');
   const buttonPosts = document.getElementById('postsBtn');
   const blockRight = document.getElementById('block-right');
-
+  
   function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
       return response
@@ -25,6 +25,7 @@ window.onload = function() {
   function saveToken(response) {
     let token = response.token;
     localStorage['token.id'] = token;
+    return response;
   }
 
   function parseJSON(response) {
@@ -104,10 +105,7 @@ window.onload = function() {
       })
       .then(checkStatus)
       .then(parseJSON)
-      .then(function(response) {
-        saveToken(response);
-        console.log(response);
-      })
+      .then(saveToken)
       .then(function(response) {
 
         ApiFetch.get('/secret', { 
@@ -140,7 +138,7 @@ window.onload = function() {
         })
       })
       .catch(function(error) {
-        // document.location.replace('/wtf');
+        console.log(error);
       })
     });
   }
@@ -165,11 +163,8 @@ window.onload = function() {
       })
       .then(checkStatus)
       .then(parseJSON)
-      .then(function(response) {
-        // document.location.replace('/success');
-      })
       .catch(function(error) {
-        // document.location.replace('/wtf');
+        console.log(error);
       })
     })
   }
@@ -214,7 +209,8 @@ window.onload = function() {
           let userPost = {
             postTitle: title.value,
             postDate: date.textContent,
-            postArea: area.value
+            postArea: area.value,
+            userId: currentUser
           }
 
           ApiFetch.get('/newpost', { 

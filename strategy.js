@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const jwt = require('jsonwebtoken');
+const sequelize = require('./sequelize');
+const jwt = require('jsonwebtoken')
 const passport = require('passport');
 const passportJWT = require("passport-jwt");
 
@@ -7,12 +7,6 @@ function Strategy() {
 
   const ExtractJwt = passportJWT.ExtractJwt;
   const JwtStrategy = passportJWT.Strategy;
-
-  const sequelize = new Sequelize('app', 'nodejs', '1111', {
-    dialect: 'postgres',
-    host: 'localhost',
-    port: 5432
-  });
  
   this.jwtOptions = {}
   this.jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
