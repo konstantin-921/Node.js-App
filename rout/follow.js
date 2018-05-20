@@ -9,7 +9,7 @@ app.post('/follow', function(req, res) {
 function followUser(req, res) {
   sequelize.query("CREATE TABLE IF NOT EXISTS followers (id serial, follower integer, following integer, PRIMARY KEY(follower, following), FOREIGN KEY(follower) REFERENCES users(id), FOREIGN KEY(following) REFERENCES posts(id));")
   .then((followers) => {
-      sequelize.query(`INSERT INTO followers (follower, following) VALUES ('${currentUser}', '${req.body.id}')`)
+      sequelize.query(`INSERT INTO followers (follower, following) VALUES ('${req.body.userId}', '${req.body.id}')`)
       .then((followers) => {
         res.json("Success!");
       })

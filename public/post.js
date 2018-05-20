@@ -1,7 +1,7 @@
 const Post = (function() {
 
 
-  function Post(content, title, date, id) {
+  function Post(content, title, date, name) {
 
     const that = this;
   
@@ -32,6 +32,15 @@ const Post = (function() {
     this.elem.appendChild(this.textNode);
     this.elem.appendChild(this.dateBox);
 
+    if(name) {
+      this.nameBox = document.createElement('div');
+      this.nameBox.className = 'name-box';
+      this.nameBox.id = 'nameBox';
+      this.name = document.createTextNode(name);
+      this.nameBox.appendChild(this.name);
+      this.headBox.appendChild(this.nameBox);
+    }
+
     function checkStatus(response) {
       if (response.status >= 200 && response.status < 300) {
         return response
@@ -44,39 +53,6 @@ const Post = (function() {
 
     function parseJSON(response) {
       return response.json();
-    }
-
-    if(id) {
-
-      let userId = {
-        id: id
-      }
-      
-      fetch('/getusername', { 
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userId),
-        redirect: 'follow'
-      })
-      .then(checkStatus)
-      .then(parseJSON)
-      .then(function(response) {
-        console.log(response[0].name);
-        let userName = response[0].name;
-
-        that.nameBox = document.createElement('div');
-        that.nameBox.className = 'name-box';
-        that.nameBox.id = 'nameBox';
-        that.name = document.createTextNode(userName);
-        that.nameBox.appendChild(that.name);
-        that.headBox.appendChild(that.nameBox);
-
-      })
-      .catch(function(error) {
-        console.log(error);
-      })
     }
 
   }

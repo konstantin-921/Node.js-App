@@ -15,7 +15,6 @@ const friendspost = require('./rout/friendspost');
 const finduser = require('./rout/finduser');
 const follow = require('./rout/follow');
 const deletefollow = require('./rout/deletefollow');
-let currentUser = '';
 
 app.use(function(req, res, next) {
   let auth = req.get('Authorization');
@@ -56,27 +55,13 @@ app.post('/teststate', function(req, res) {
   teststate(req, res);
 })
 
-app.post('/getusername', function(req, res) {
-  getusername(req, res);
-})
-
 function teststate(req, res) {
-  sequelize.query(`SELECT follower, following FROM followers WHERE follower = '${currentUser}' and following = '${req.body.id}'`, {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT follower, following FROM followers`, {type: sequelize.QueryTypes.SELECT})
   .then((followers) => {
-    console.log(followers);
-    if(followers[0].follower) {
       res.json(followers);
-    } 
   })
   .catch((error) => {
     console.log(error);
-  })
-}
-
-function getusername(req, res) {
-  sequelize.query(`SELECT name FROM users WHERE id = '${req.body.id}'`, {type: sequelize.QueryTypes.SELECT})
-  .then((users) => {
-    res.json(users);
   })
 }
 

@@ -3,12 +3,12 @@ const app = module.exports = express();
 const sequelize = require('../sequelize');
 
 
-app.get('/mypost', function(req, res) {
+app.post('/mypost', function(req, res) {
   sendPosts(req, res);
 })
 
 function sendPosts(req, res) {
-  sequelize.query(`SELECT * FROM posts WHERE user_id = '${currentUser}'`, {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT * FROM posts WHERE user_id = '${req.body.id}'`, {type: sequelize.QueryTypes.SELECT})
   .then((posts) => {
     res.json(posts);
   })

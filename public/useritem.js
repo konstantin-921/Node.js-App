@@ -7,7 +7,8 @@ const CreateListUser = (function() {
     this.state = false;
 
     let data = {
-      id: id
+      id: id,
+      userId: localStorage['user.id']
     }
 
     this.item = document.createElement('li');
@@ -44,11 +45,11 @@ const CreateListUser = (function() {
     .then(checkStatus)
     .then(parseJSON)
     .then(function(response) {
-      
-      if(response[0].follower) {
-        console.log(response);
-        that.state = true;
-        that.link.classList.add('color');
+      for(var i = 0; i < response.length; i++) {
+        if(response[i].follower == data.userId && response[i].following == data.id) {
+          that.state = true;
+          that.link.classList.add('color');
+        }
       }
     })
     .catch(function(error) {

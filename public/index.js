@@ -25,6 +25,7 @@ window.onload = function() {
   function saveToken(response) {
     let token = response.token;
     localStorage['token.id'] = token;
+    localStorage['user.id'] = response.userId;
     return response;
   }
 
@@ -48,15 +49,14 @@ window.onload = function() {
     .then(checkStatus)
     .then(parseJSON)
     .then(function(response) {
-
       const listUsers = document.createElement('ul');
       listUsers.id = 'listUsers';
       listUsers.className = 'list-users';
 
       for(var i = 0; i < response.length; i++){
-        let userName = response[i].name;
-        let userId = response[i].id
-        let listItem = new CreateListUser(userName, userId);
+        var userName = response[i].name;
+        var userId = response[i].id
+        var listItem = new CreateListUser(userName, userId);
         listUsers.appendChild(listItem.item);
       };
 
@@ -81,7 +81,7 @@ window.onload = function() {
     if(minutes <= 9) {
       minutes = "0" + minutes;
     }
-    let newDate = DAYNAMES[day -1] + "  " + hours + ":" + minutes;
+    let newDate = DAYNAMES[day != 0 ? day - 1 : 6] + "  " + hours + ":" + minutes;
     
     return newDate;
   }
@@ -107,7 +107,6 @@ window.onload = function() {
       .then(parseJSON)
       .then(saveToken)
       .then(function(response) {
-
         ApiFetch.get('/secret', { 
           method: 'POST',
           headers: {
@@ -210,7 +209,7 @@ window.onload = function() {
             postTitle: title.value,
             postDate: date.textContent,
             postArea: area.value,
-            userId: currentUser
+            id: localStorage['user.id']
           }
 
           ApiFetch.get('/newpost', { 
@@ -233,11 +232,16 @@ window.onload = function() {
     buttonMypost.addEventListener('click', function(event) {
       event.preventDefault();
 
+      let data = {
+        id: localStorage['user.id']
+      }
+
       ApiFetch.get('/mypost', { 
-        method: 'GET',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(data),
         redirect: 'follow'
       })
       .then(checkStatus)
@@ -272,11 +276,16 @@ window.onload = function() {
     buttonPosts.addEventListener('click', function(event) {
       event.preventDefault();
 
+      let data = {
+        id: localStorage['user.id']
+      }
+
       ApiFetch.get('/friendspost', { 
-        method: 'GET',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(data),
         redirect: 'follow'
       })
       .then(checkStatus)
@@ -292,7 +301,8 @@ window.onload = function() {
           let content = response[i].content;
           let title = response[i].title;
           let date = response[i].date;
-          var newPost = new Post(content, title, date, id);
+          let name = response[i].name;
+          var newPost = new Post(content, title, date, name);
           listFriends.appendChild(newPost.elem);
         }
 
