@@ -2,6 +2,5 @@
 package-lock.json
 .idea
 *.log
-.babelrc
 .vscode
 /dist

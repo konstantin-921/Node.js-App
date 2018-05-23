@@ -2,6 +2,7 @@ const CreateListUser = (function() {
 
   function CreateListUser(user, id) {
 
+    const help = new Help();
     const that = this;
 
     this.state = false;
@@ -20,20 +21,6 @@ const CreateListUser = (function() {
     this.link.id = 'followLink';
     this.link.className = 'fa fa-heart';
 
-    function checkStatus(response) {
-      if (response.status >= 200 && response.status < 300) {
-        return response
-      } else {
-        let error = new Error(response.statusText)
-        error.response = response
-        throw error
-      }
-    }
-
-    function parseJSON(response) {
-      return response.json();
-    }
-
     fetch('/teststate', { 
       method: 'POST',
       headers: {
@@ -42,8 +29,8 @@ const CreateListUser = (function() {
       body: JSON.stringify(data),
       redirect: 'follow'
     })
-    .then(checkStatus)
-    .then(parseJSON)
+    .then(help.checkStatus)
+    .then(help.parseJSON)
     .then(function(response) {
       for(var i = 0; i < response.length; i++) {
         if(response[i].follower == data.userId && response[i].following == data.id) {

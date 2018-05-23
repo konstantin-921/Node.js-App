@@ -2,12 +2,59 @@ body {
   box-sizing: border-box;
 }
 
+ul, li {
+  padding: 0;
+  margin: 0;
+}
+
+/* Head page */
+
+.signIn-form {
+  display: inline-block;
+  width: 375px;
+}
+
+.string-head {
+  display: inline-block;
+  width: 20px;
+}
+
+.signUp-form {
+  margin-top: 20px;
+}
+
+.signUp-form input {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.user-message {
+  width: 450px;
+  height: auto;
+  margin-top: 5px;
+  padding-left: 5px;
+  line-height: 25px;
+}
+
+.successfully {
+  background-color: rgb(202, 252, 202);
+  color: rgb(36, 119, 36);
+}
+
+.unsuccessfully {
+  background-color: rgb(250, 176, 176);
+  color: rgb(107, 12, 12);
+}
+
+/* Home page */
+
 h1 {
   color: darkolivegreen;
   text-align: center;
 }
 
 .container {
+  position: relative;
   width: 100%;
   height: 100vh;
 }
@@ -18,6 +65,40 @@ h1 {
   width: 200px;
   height: 25px;
   font-size: 24px;
+}
+
+.user-box {
+  display: block;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin: 0 auto;
+  width: 205px;
+  z-index: 2;
+  height: auto;
+  font-size: 24px;
+}
+
+.user-item {
+  position: relative;
+  width: 200px;
+  min-height: 25px;
+  line-height: 24px;
+  border: 1px solid #000;
+  background-color: #fff;
+  margin-top: 5px;
+  list-style-type: none;
+  font-size: 24px;
+}
+
+.fa-heart {
+  position: absolute;
+  margin: 5px;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #999;
 }
 
 .container-block {
@@ -115,27 +196,6 @@ h1 {
   right: 0;
   bottom: 0;
   margin: 5px;
-}
-
-.user-item {
-  position: relative;
-  width: 200px;
-  min-height: 25px;
-  line-height: 24px;
-  border: 1px solid rgb(132, 197, 132);
-  margin-top: 5px;
-  list-style-type: none;
-  font-size: 24px;
-}
-
-.fa-heart {
-  position: absolute;
-  margin: 5px;
-  right: 0;
-  bottom: 0;
-  cursor: pointer;
-  font-size: 14px;
-  color: #999;
 }
 
 .color {

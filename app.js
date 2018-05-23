@@ -1,13 +1,11 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser')
-const sequelize = require('./sequelize');
+const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const strategy = require("./strategy.js");
+const verifytoken = require('./verifytoken');
 const login = require("./rout/login");
 const secret = require("./rout/secret");
-const home = require('./rout/home');
 const registred = require('./rout/registred');
 const newpost = require('./rout/newpost');
 const mypost = require('./rout/mypost');
@@ -15,26 +13,9 @@ const friendspost = require('./rout/friendspost');
 const finduser = require('./rout/finduser');
 const follow = require('./rout/follow');
 const deletefollow = require('./rout/deletefollow');
+const teststate = require('./rout/teststate');
 
-app.use(function(req, res, next) {
-  let auth = req.get('Authorization');
-  const excluded = ['/', '/login', '/secret', '/registred'];
-
-  if(auth && excluded.indexOf(req.url) > -1) {
-    let token = auth.substring(7);
-    
-      jwt.verify(token, 'tasmanianDevil', {ignoreExpiration: false}, function(err, decoded) {
-          if(!!(decoded.user)) {
-            return next();
-          } else if(err) {
-            res.status(401).json({message:"token not verify"});
-          }
-      });
-  } else {
-    next();
-  }
-})
-
+app.use(verifytoken);
 app.use(passport.initialize());
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -42,7 +23,6 @@ app.use(bodyParser.json())
 
 app.use(login);
 app.use(secret);
-app.use(home);
 app.use(registred);
 app.use(newpost);
 app.use(mypost);
@@ -50,20 +30,7 @@ app.use(friendspost);
 app.use(finduser);
 app.use(follow);
 app.use(deletefollow);
-
-app.post('/teststate', function(req, res) {
-  teststate(req, res);
-})
-
-function teststate(req, res) {
-  sequelize.query(`SELECT follower, following FROM followers`, {type: sequelize.QueryTypes.SELECT})
-  .then((followers) => {
-      res.json(followers);
-  })
-  .catch((error) => {
-    console.log(error);
-  })
-}
+app.use(teststate);
 
 app.listen(3000, function () {
  console.log('Example app listening on port 3000!');

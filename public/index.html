@@ -4,23 +4,33 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-   <script src="./apiFetch.js"></script>
+   <link rel="stylesheet" href="./style.css" type="text/css">
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+   <script src="./src/apiFetch.js"></script>
    <title>Document</title>
 </head>
 <body>
-   <form class="signIn">
+   <form class="signIn-form">
        <input name="name" id="name" type="text" placeholder="login">
        <input name="pass" id="pass" type="text" placeholder="password">
        <button id="btn">Sign in</button>
-    </form>
-       <br>
-       <br>
-    <form class="signUp">
-       <input type="text" name="nameUp" id="nameUp" placeholder="login">
-       <input type="text" name="passUp" id="passUp"  placeholder="password">
-       <input type="text" name="emailUp" id="emailUp" placeholder="email">
-       <button id="btnUp">Sign up</button>
-    </form>
-    <script src="./index.js"></script>
+  </form>
+  <div class="string-head">Or</div>
+  <button id = 'signUp'>SignUp</button>
+  <div class="user-message" id="userMessage"></div>
+  <div class="signUp-box" id="signUpBox"></div>
+    <script src="./src/helper.js"></script>
+    <script src="./src/login.js"></script>
+    <script src="./src/signup.js"></script>
+    <script src="./src/showSignUp.js"></script>
+    <script src="./src/registred.js"></script>
+    <script src="./src/usermessage.js"></script>
+    <script src="./src/home.js"></script>
+    <script src="./src/finduser.js"></script>
+    <script src="./src/mypost.js"></script>
+    <script src="./src/newpost.js"></script>
+    <script src="./src/friendspost.js"></script>
+    <script src="./src/useritem.js"></script>
+    <script src="./src/post.js"></script>
 </body>
 </html>

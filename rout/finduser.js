@@ -8,7 +8,8 @@ app.post('/finduser', function(req, res) {
 
 function findUser(req, res) {
   let letter = req.body.letter;
-  sequelize.query(`SELECT name, id FROM users WHERE name LIKE '${letter}%'`, {type: sequelize.QueryTypes.SELECT})
+  let id = req.body.id;
+  sequelize.query(`SELECT name, id FROM users WHERE name LIKE '${letter}%' and NOT id = '${id}'`, {type: sequelize.QueryTypes.SELECT})
   .then((users) => {
     res.json(users);
   })

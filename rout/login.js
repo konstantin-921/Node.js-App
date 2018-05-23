@@ -3,6 +3,7 @@ const app = module.exports = express();
 const jwt = require('jsonwebtoken');
 const sequelize = require('../sequelize');
 const strategy = require("../strategy");
+const bcrypt = require('bcrypt');
 
 app.post('/login', function (req, res) {
   query(req, res);
@@ -13,7 +14,12 @@ function query(req, res) {
   .then((users) => {
     var user = users[0];
     
-    if(user.password === req.body.userpass) {
+    let salt = bcrypt.genSaltSync(10);
+    console.log(bcrypt.hashSync(req.body.userpass, salt));
+     
+    
+    
+    if(user.password === req.body.userpass && user.name === req.body.username) {
       let payload = {user: user.id};
       let token = jwt.sign(payload, strategy.jwtOptions.secretOrKey, {expiresIn: '30h'});
       res.json({message: "ok", token: token, userId: user.id});
@@ -22,6 +28,7 @@ function query(req, res) {
     }
   })
   .catch((error) => {
+    res.json({message:"Такого пользователя не существует"});
     console.log(error);
   })
 }
