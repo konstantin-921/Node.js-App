@@ -10,7 +10,7 @@ Install and start
 npm install
 npm start
 ```
-You also need to configure the ORM Sequelize in the sequelize.js file.
+You also need to configure the ORM Sequelize in the sequelize.js file and you need to run the PostgreSQL database.
 ```sh
   const sequelize = new Sequelize('database', 'username', 'password', {
     dialect: 'postgres',
