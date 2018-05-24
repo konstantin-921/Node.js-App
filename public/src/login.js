@@ -12,17 +12,19 @@ const Login = (function() {
         event.preventDefault();
   
         if(inputName.value != '' && inputPass.value != '') {
-            let userData = {
-              username: inputName.value,
-              userpass: inputPass.value
-            };
+          let userData = {
+            username: inputName.value,
+            userpass: inputPass.value
+          };
+
+          const url = new URL('http://localhost:3000/auth/login');
+          url.search = new URLSearchParams(userData);
     
-          fetch('/login', { 
-            method: 'POST',
+          fetch(url, { 
+            method: 'GET',
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(userData),
             redirect: 'follow'
           })
           .then(help.checkStatus)
@@ -33,12 +35,10 @@ const Login = (function() {
               const text = response.message;
               const message = new UserMessage(text, false);
             } else {
-              ApiFetch.get('/secret', { 
-                method: 'POST',
+              ApiFetch.post('/auth/secret', { 
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify(userData),
                 redirect: 'follow'
               })
               .then(help.checkStatus)

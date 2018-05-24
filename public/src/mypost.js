@@ -14,13 +14,13 @@ const MyPost = (function() {
             id: localStorage['user.id']
           }
 
-          ApiFetch.get('/mypost', { 
-            method: 'POST',
+          var url = new URL('http://localhost:3000/posts');
+          url.search = new URLSearchParams(data);
+
+          ApiFetch.get(url, { 
             headers: {
               "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-            redirect: 'follow'
+            }
           })
           .then(help.checkStatus)
           .then(help.parseJSON)

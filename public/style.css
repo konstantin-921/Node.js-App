@@ -11,7 +11,7 @@ ul, li {
 
 .signIn-form {
   display: inline-block;
-  width: 375px;
+  width: 390px;
 }
 
 .string-head {
@@ -193,9 +193,8 @@ h1 {
 
 .date-box {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  margin: 5px;
+  top: 4px;
+  right: 22%;
 }
 
 .color {

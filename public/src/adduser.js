@@ -19,7 +19,7 @@ const Registred = (function() {
             useremail: inputEmailSign.value
           }
     
-          fetch('/registred', { 
+          fetch('/users', { 
             method: 'POST',
             headers: {
               "Content-Type": "application/json"

@@ -14,8 +14,7 @@ const FriendsPost = (function() {
           id: localStorage['user.id']
         }
     
-        ApiFetch.get('/friendspost', { 
-          method: 'POST',
+        ApiFetch.post('/posts/friendsposts', { 
           headers: {
             "Content-Type": "application/json",
           },

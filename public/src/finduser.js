@@ -23,13 +23,14 @@ const FindUser = (function() {
         letter: code,
         id: localStorage['user.id']
       }; 
-      ApiFetch.get('/finduser', { 
-        method: 'POST',
+
+      var url = new URL('http://localhost:3000/users/search');
+      url.search = new URLSearchParams(keyCode);
+
+      ApiFetch.get(url, { 
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(keyCode),
-        redirect: 'follow'
+        }
       })
       .then(help.checkStatus)
       .then(help.parseJSON)

@@ -21,12 +21,12 @@ const CreateListUser = (function() {
     this.link.id = 'followLink';
     this.link.className = 'fa fa-heart';
 
-    fetch('/teststate', { 
-      method: 'POST',
+    const url = new URL('http://localhost:3000/users/search/teststate');
+
+    ApiFetch.get(url, { 
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
       redirect: 'follow'
     })
     .then(help.checkStatus)
@@ -52,8 +52,7 @@ const CreateListUser = (function() {
 
         that.link.classList.add('color');
 
-        fetch('/follow', { 
-          method: 'POST',
+        ApiFetch.post('/users/search', {
           headers: {
             "Content-Type": "application/json",
           },
@@ -67,8 +66,7 @@ const CreateListUser = (function() {
 
         that.link.classList.remove('color');
 
-        fetch('/deletefollow', { 
-          method: 'POST',
+        ApiFetch.delete('/users/search', { 
           headers: {
             "Content-Type": "application/json",
           },

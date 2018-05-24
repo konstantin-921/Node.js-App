@@ -64,8 +64,7 @@ const AddPost = (function() {
               id: localStorage['user.id']
             }
     
-            ApiFetch.get('/newpost', { 
-              method: 'POST',
+            ApiFetch.post('/posts', { 
               headers: {
                 "Content-Type": "application/json",
               },
