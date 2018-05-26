@@ -21,7 +21,7 @@ const CreateListUser = (function() {
     this.link.id = 'followLink';
     this.link.className = 'fa fa-heart';
 
-    const url = new URL('http://localhost:3000/users/search/teststate');
+    const url = new URL('http://localhost:3000/followers/teststate');
 
     ApiFetch.get(url, { 
       headers: {
@@ -52,7 +52,7 @@ const CreateListUser = (function() {
 
         that.link.classList.add('color');
 
-        ApiFetch.post('/users/search', {
+        ApiFetch.post('/followers', {
           headers: {
             "Content-Type": "application/json",
           },
@@ -66,7 +66,7 @@ const CreateListUser = (function() {
 
         that.link.classList.remove('color');
 
-        ApiFetch.delete('/users/search', { 
+        ApiFetch.delete('/followers', { 
           headers: {
             "Content-Type": "application/json",
           },

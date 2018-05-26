@@ -13,12 +13,14 @@ const FriendsPost = (function() {
         let data = {
           id: localStorage['user.id']
         }
+
+        var url = new URL('http://localhost:3000/posts/friendsposts');
+        url.search = new URLSearchParams(data);
     
-        ApiFetch.post('/posts/friendsposts', { 
+        ApiFetch.get(url, { 
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
           redirect: 'follow'
         })
         .then(help.checkStatus)

@@ -5,7 +5,7 @@ const passport = require('passport');
 const routesPost = require('./route/posts');
 const routesUsers = require('./route/users');
 const routesAuth = require('./route/auth');
-const verifytoken = require('./verifytoken');
+const verifytoken = require('./api/services/verifytoken');
 
 app.use(verifytoken);
 app.use(passport.initialize());

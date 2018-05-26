@@ -1,8 +1,8 @@
 const express = require('express');
 const router = module.exports = express.Router();
 const jwt = require('jsonwebtoken');
-const sequelize = require('../sequelize');
-const strategy = require("../strategy");
+const sequelize = require('../models/sequelize');
+const strategy = require("../api/services/strategy");
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
@@ -13,7 +13,7 @@ router.get('/auth/login', function (req, res) {
 function query(req, res, next) {
   let username = req.query.username;
   let userpass = req.query.userpass;
-  sequelize.query(`SELECT * FROM users WHERE name = '${username}'`, {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT * FROM users WHERE name = :name`, {replacements: {name: username}, type: sequelize.QueryTypes.SELECT})
   .then((users) => {
     var user = users[0];
     let hash = bcrypt.compareSync(userpass, user.password);

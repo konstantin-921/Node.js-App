@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
           } else if(err) {
             res.status(401).json({message:"token not verify"});
           }
-      });
+      }); 
   } else {
     next();
   }

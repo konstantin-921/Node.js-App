@@ -24,7 +24,7 @@ const FindUser = (function() {
         id: localStorage['user.id']
       }; 
 
-      var url = new URL('http://localhost:3000/users/search');
+      var url = new URL('http://localhost:3000/followers');
       url.search = new URLSearchParams(keyCode);
 
       ApiFetch.get(url, { 

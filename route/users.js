@@ -1,7 +1,7 @@
 const express = require('express');
 const router = module.exports = express.Router();
 const bcrypt = require('bcrypt');
-const sequelize = require('../sequelize');
+const sequelize = require('../models/sequelize');
 
 router.post('/users', function (req, res) {
   hash(req,res);
@@ -16,12 +16,9 @@ function hash(req, res) {
 }
 
 function addUser(req, res) {
-  sequelize.query("CREATE TABLE IF NOT EXISTS users (id bigserial PRIMARY KEY, password text, name text,  email text, avatar bytea);")
-  .then(() => {
-    sequelize.query(`INSERT INTO users (password, name, email) VALUES ('${req.body.userpass}', '${req.body.username}', '${req.body.useremail}')`)
+    sequelize.query(`INSERT INTO users (password, name, email) VALUES (:userpass, :username, :useremail)`, {replacements: {userpass: req.body.userpass, username: req.body.username, useremail: req.body.useremail}})
     .then((followers) => {
       res.json("Successful registration!");
-    })
   })
   .catch((error) => {
     console.log(error);
@@ -30,14 +27,14 @@ function addUser(req, res) {
 
 
 
-router.get('/users/search', function(req, res) {
+router.get('/followers', function(req, res) {
   findUser(req, res);
 })
 
 function findUser(req, res) {
   let id = req.query.id;
   let letter = req.query.letter;
-  sequelize.query(`SELECT name, id FROM users WHERE name ILIKE '${letter}%' and NOT id = '${id}'`, {type: sequelize.QueryTypes.SELECT})
+  sequelize.query(`SELECT name, id FROM users WHERE name ILIKE :search and NOT id = :id`, {replacements: {search : `${letter}%`, id: id}, type: sequelize.QueryTypes.SELECT})
   .then((users) => {
     res.json(users);
   })
@@ -48,17 +45,14 @@ function findUser(req, res) {
 
 
 
-router.post('/users/search', function(req, res) {
+router.post('/followers', function(req, res) {
   followUser(req, res);
 })
 
 function followUser(req, res) {
-  sequelize.query("CREATE TABLE IF NOT EXISTS followers (id bigserial, follower integer, following integer, PRIMARY KEY(follower, following), FOREIGN KEY(follower) REFERENCES users(id), FOREIGN KEY(following) REFERENCES posts(id));")
-  .then((followers) => {
-      sequelize.query(`INSERT INTO followers (follower, following) VALUES ('${req.body.userId}', '${req.body.id}')`)
+      sequelize.query(`INSERT INTO followers (follower, following) VALUES (:follower, :following)`, {replacements: {follower: req.body.userId, following: req.body.id}})
       .then((followers) => {
         res.json("Success!");
-      })
   })
   .catch((error) => {
     console.log('Error');
@@ -67,12 +61,12 @@ function followUser(req, res) {
 
 
 
-router.delete('/users/search', function(req, res) {
+router.delete('/followers', function(req, res) {
   deletefollow(req, res);
 })
 
 function deletefollow(req, res) {
-  sequelize.query(`DELETE FROM followers WHERE following = '${req.body.id}' and follower = '${req.body.userId}'`)
+  sequelize.query(`DELETE FROM followers WHERE following = :following and follower = :follower`, {replacements: {following: req.body.id, follower: req.body.userId}})
   .then((followers) => {
     res.json("Success!");
   })
@@ -80,7 +74,7 @@ function deletefollow(req, res) {
 
 
 
-router.get('/users/search/teststate', function(req, res) {
+router.get('/followers/teststate', function(req, res) {
   teststate(req, res);
 })
 

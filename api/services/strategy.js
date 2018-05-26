@@ -1,4 +1,4 @@
-const sequelize = require('./sequelize');
+const sequelize = require('../../models/sequelize');
 const jwt = require('jsonwebtoken')
 const passport = require('passport');
 const passportJWT = require("passport-jwt");
