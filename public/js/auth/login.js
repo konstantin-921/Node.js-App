@@ -32,6 +32,7 @@ const Login = (function() {
           .then(help.saveToken)
           .then(function(response) {
             if(!response.token) {
+              console.log(response);
               const text = response.message;
               const message = new UserMessage(text, false);
             } else {

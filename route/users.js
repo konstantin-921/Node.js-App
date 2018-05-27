@@ -3,88 +3,86 @@ const router = module.exports = express.Router();
 const bcrypt = require('bcrypt');
 const sequelize = require('../models/sequelize');
 
-router.post('/users', function (req, res) {
-  hash(req,res);
+router.post('/users', function (req, res, next) {
+  hash(req, res, next);
 });
 
-function hash(req, res) {
+function hash(req, res, next) {
   let passwordFromUser = req.body.userpass;
   let salt = bcrypt.genSaltSync(10);
   let passwordToSave = bcrypt.hashSync(passwordFromUser, salt);
   req.body.userpass = passwordToSave;
-  addUser(req, res);
+  addUser(req, res, next);
 }
 
-function addUser(req, res) {
-    sequelize.query(`INSERT INTO users (password, name, email) VALUES (:userpass, :username, :useremail)`, {replacements: {userpass: req.body.userpass, username: req.body.username, useremail: req.body.useremail}})
-    .then((followers) => {
-      res.json("Successful registration!");
-  })
-  .catch((error) => {
-    console.log(error);
-  })
+async function addUser(req, res, next) {
+  try {  
+    let data = await sequelize.query(`INSERT INTO users (password, name, email) VALUES (:userpass, :username, :useremail)`, {replacements: {userpass: req.body.userpass, username: req.body.username, useremail: req.body.useremail}});
+    res.json("Successful registration!");
+  } catch(error){
+    next();
+  }
 }
 
 
 
-router.get('/followers', function(req, res) {
-  findUser(req, res);
+router.get('/followers', function(req, res, next) {
+  findUser(req, res, next);
 })
 
-function findUser(req, res) {
-  let id = req.query.id;
-  let letter = req.query.letter;
-  sequelize.query(`SELECT name, id FROM users WHERE name ILIKE :search and NOT id = :id`, {replacements: {search : `${letter}%`, id: id}, type: sequelize.QueryTypes.SELECT})
-  .then((users) => {
-    res.json(users);
-  })
-  .catch((error) => {
-    console.log(error);
-  })
+async function findUser(req, res, next) {
+  try {
+    let id = req.query.id;
+    let letter = req.query.letter;
+    let data = await sequelize.query(`SELECT name, id FROM users WHERE name ILIKE :search and NOT id = :id`, {replacements: {search : `${letter}%`, id: id}, type: sequelize.QueryTypes.SELECT});
+    res.json(data);
+  } catch(error) {
+    next();
+  }
 }
 
 
 
-router.post('/followers', function(req, res) {
-  followUser(req, res);
+router.post('/followers', function(req, res,next) {
+  followUser(req, res, next);
 })
 
-function followUser(req, res) {
-      sequelize.query(`INSERT INTO followers (follower, following) VALUES (:follower, :following)`, {replacements: {follower: req.body.userId, following: req.body.id}})
-      .then((followers) => {
-        res.json("Success!");
-  })
-  .catch((error) => {
-    console.log('Error');
-  })
-}
-
-
-
-router.delete('/followers', function(req, res) {
-  deletefollow(req, res);
-})
-
-function deletefollow(req, res) {
-  sequelize.query(`DELETE FROM followers WHERE following = :following and follower = :follower`, {replacements: {following: req.body.id, follower: req.body.userId}})
-  .then((followers) => {
+async function followUser(req, res, next) {
+  try {
+    await sequelize.query(`INSERT INTO followers (follower, following) VALUES (:follower, :following)`, {replacements: {follower: req.body.userId, following: req.body.id}});
     res.json("Success!");
-  })
+  } catch(error) {
+    next();
+  }
 }
 
 
 
-router.get('/followers/teststate', function(req, res) {
-  teststate(req, res);
+router.delete('/followers', function(req, res, next) {
+  deletefollow(req, res, next);
 })
 
-function teststate(req, res) {
-  sequelize.query(`SELECT follower, following FROM followers`, {type: sequelize.QueryTypes.SELECT})
-  .then((followers) => {
-      res.json(followers);
-  })
-  .catch((error) => {
-    console.log(error);
-  })
+async function deletefollow(req, res, next) {
+  try {
+    await sequelize.query(`DELETE FROM followers WHERE following = :following and follower = :follower`, {replacements: {following: req.body.id, follower: req.body.userId}});
+    res.json("Success!");
+  } catch(error) {
+    next();
+  }
+}
+
+
+
+router.get('/followers/teststate', function(req, res, next) {
+  teststate(req, res, next);
+})
+
+async function teststate(req, res, next) {
+  try {
+    let data = await sequelize.query(`SELECT follower, following FROM followers`, {type: sequelize.QueryTypes.SELECT});
+    res.json(data);
+  } catch(error){
+    next();
+  }
 }
 

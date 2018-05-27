@@ -6,35 +6,37 @@ const strategy = require("../api/services/strategy");
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
-router.get('/auth/login', function (req, res) {
-  query(req, res);
+router.get('/auth/login', function (req, res, next) {
+  query(req, res, next);
 });
 
-function query(req, res, next) {
-  let username = req.query.username;
-  let userpass = req.query.userpass;
-  sequelize.query(`SELECT * FROM users WHERE name = :name`, {replacements: {name: username}, type: sequelize.QueryTypes.SELECT})
-  .then((users) => {
-    var user = users[0];
+async function query(req, res, next) {
+  try {
+    let username = req.query.username;
+    let userpass = req.query.userpass;
+    let data = await sequelize.query(`SELECT * FROM users WHERE name = :name`, {replacements: {name: username}, type: sequelize.QueryTypes.SELECT});
+    let user = data[0];
     let hash = bcrypt.compareSync(userpass, user.password);
-    
+      
     if(hash && user.name === username) {
       let payload = {user: user.id};
       let token = jwt.sign(payload, strategy.jwtOptions.secretOrKey, {expiresIn: '30h'});
       res.json({message: "ok", token: token, userId: user.id});
     } else {
-      res.status(401).json({message:"passwords did not match"});
+      res.json({message:"Пароль не верен"});
     }
-  })
-  .catch((error) => {
-    console.log(error);
+  } catch(error){
     res.json({message:"Такого пользователя не существует"});
-    // throw new Error ("Такого пользователя не существует");
-  })
+    next(error);
+  }
 }
 
 
 
-router.post('/auth/secret', passport.authenticate('jwt', { session: false}), function(req, res){
-  res.json("Success! You can not see this without a token");
+router.post('/auth/secret', passport.authenticate('jwt', { session: false}), function(req, res, next){
+  try {
+    res.json("Success! You can not see this without a token");
+  } catch(error) {
+    next();
+  }
 });

@@ -10,8 +10,8 @@ const verifytoken = require('./api/services/verifytoken');
 app.use(verifytoken);
 app.use(passport.initialize());
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(routesAuth);
 app.use(routesUsers);
@@ -20,7 +20,7 @@ app.use(routesPost);
 
 // error handling middleware
 app.use(function(err, req, res, next) {
-  res.send({error: err});
+  res.json(err.message);
 })
 
 app.listen(3000, function () {
