@@ -17,10 +17,15 @@ function hash(req, res, next) {
 
 async function addUser(req, res, next) {
   try {  
-    let data = await sequelize.query(`INSERT INTO users (password, name, email) VALUES (:userpass, :username, :useremail)`, {replacements: {userpass: req.body.userpass, username: req.body.username, useremail: req.body.useremail}});
-    res.json("Successful registration!");
+    let search = await sequelize.query(`SELECT *  FROM users WHERE name = '${req.body.username}' `, { type: sequelize.QueryTypes.SELECT });
+    if(search[0] === undefined) {
+      let data = await sequelize.query(`INSERT INTO users (password, name, email) VALUES (:userpass, :username, :useremail)`, {replacements: {userpass: req.body.userpass, username: req.body.username, useremail: req.body.useremail}});
+      res.json("Successful registration!");
+    } else {
+      res.json({error: 'Такой пользователь уже существует'});
+    }
   } catch(error){
-    next();
+    next(error);
   }
 }
 
@@ -37,7 +42,7 @@ async function findUser(req, res, next) {
     let data = await sequelize.query(`SELECT name, id FROM users WHERE name ILIKE :search and NOT id = :id`, {replacements: {search : `${letter}%`, id: id}, type: sequelize.QueryTypes.SELECT});
     res.json(data);
   } catch(error) {
-    next();
+    next(error);
   }
 }
 
@@ -52,7 +57,7 @@ async function followUser(req, res, next) {
     await sequelize.query(`INSERT INTO followers (follower, following) VALUES (:follower, :following)`, {replacements: {follower: req.body.userId, following: req.body.id}});
     res.json("Success!");
   } catch(error) {
-    next();
+    next(error);
   }
 }
 
@@ -67,7 +72,7 @@ async function deletefollow(req, res, next) {
     await sequelize.query(`DELETE FROM followers WHERE following = :following and follower = :follower`, {replacements: {following: req.body.id, follower: req.body.userId}});
     res.json("Success!");
   } catch(error) {
-    next();
+    next(error);
   }
 }
 
@@ -82,7 +87,7 @@ async function teststate(req, res, next) {
     let data = await sequelize.query(`SELECT follower, following FROM followers`, {type: sequelize.QueryTypes.SELECT});
     res.json(data);
   } catch(error){
-    next();
+    next(error);
   }
 }
 

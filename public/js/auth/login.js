@@ -33,7 +33,7 @@ const Login = (function() {
           .then(function(response) {
             if(!response.token) {
               console.log(response);
-              const text = response.message;
+              const text = response.message||response;
               const message = new UserMessage(text, false);
             } else {
               ApiFetch.post('/auth/secret', { 

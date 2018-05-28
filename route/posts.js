@@ -12,7 +12,7 @@ async function sendPosts(req, res, next) {
     let data = await sequelize.query(`SELECT * FROM posts WHERE user_id = ?`, {replacements: [id], type: sequelize.QueryTypes.SELECT});
     res.json(data);
   } catch(error) {
-    next();
+    next(error);
   }
 }
 
@@ -25,7 +25,7 @@ async function savePost(req, res, next) {
     await sequelize.query(`INSERT INTO posts (content, date, title, user_id) VALUES (:text, :date, :title, :id)`, {replacements: {text: req.body.postArea, date: req.body.postDate, title: req.body.postTitle, id: req.body.id}});
     res.json("Post successfully saved!")
   } catch(error) {
-    next();
+    next(error);
   }
 }
 
@@ -39,6 +39,6 @@ async function sendFriendsPosts(req, res, next) {
     let data = await sequelize.query(`SELECT users.name, posts.id, posts.content, posts.date, posts.user_id, posts.title  FROM users RIGHT JOIN posts ON users.id = posts.user_id WHERE posts.user_id IN (SELECT following FROM followers WHERE follower = ?)`, {replacements: [id], type: sequelize.QueryTypes.SELECT});
       res.json(data);
   } catch(error){
-    next();
+    next(error);
   }
 }

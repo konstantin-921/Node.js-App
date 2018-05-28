@@ -31,8 +31,8 @@ const Registred = (function() {
           .then(help.parseJSON)
           .then(function(response) {
             const form = document.getElementById('signUpForm').remove();
-            const text = response;
-            const message = new UserMessage(text, true);
+            const text = response.error||response;
+            const message = response.error ? new UserMessage(text, false) : new UserMessage(text, true);
           })
           .catch(function(error) {
             console.log(error);

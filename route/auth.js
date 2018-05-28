@@ -37,6 +37,6 @@ router.post('/auth/secret', passport.authenticate('jwt', { session: false}), fun
   try {
     res.json("Success! You can not see this without a token");
   } catch(error) {
-    next();
+    next(error);
   }
 });
