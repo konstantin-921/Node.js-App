@@ -4,7 +4,20 @@ const AddPost = (function() {
 
     const buttonAddpost = document.getElementById('addpostBtn');
     const blockRight = document.getElementById('block-right');
+    const help = new Help();
     const that = this;
+
+    this.userMessage = function(response) {
+      const messageBox = document.getElementById('messageBoxPost');
+      messageBox.textContent = response;
+    }
+
+    this.hide = function() {
+      const messageBox = document.getElementById('messageBoxPost');
+      while(messageBox.lastChild){
+        messageBox.removeChild(messageBox.lastChild);
+      }
+    }
 
     this.currentDate = function() {
       let date = new Date();
@@ -43,11 +56,16 @@ const AddPost = (function() {
         saveButton.id = 'savebutton';
         saveButton.className = 'savebutton';
         saveButton.textContent = 'Save';
+        const messageBoxPost = document.createElement('div');
+        messageBoxPost.id = 'messageBoxPost';
+        messageBoxPost.className = 'message-box-post';
+
     
         post.appendChild(date);
         post.appendChild(title);
         post.appendChild(area);
         post.appendChild(saveButton);
+        post.appendChild(messageBoxPost);
     
         while(blockRight.lastChild){
           blockRight.removeChild(blockRight.lastChild);
@@ -70,6 +88,12 @@ const AddPost = (function() {
               },
               body: JSON.stringify(userPost),
               redirect: 'follow'
+            })
+            .then(help.checkStatus)
+            .then(help.parseJSON)
+            .then(function(response) {
+              that.userMessage(response)
+              setTimeout(that.hide, 3000);
             })
             .catch(function(error) {
               console.log(error);

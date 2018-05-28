@@ -124,6 +124,8 @@ h1 {
   width: 100px;
 }
 
+/* New post */
+
 .newpost {
   margin-top: 10px;
   border: 1px dotted darkolivegreen;
@@ -156,8 +158,17 @@ h1 {
   width: 60px;
   height: 20px;
   margin: 0 auto;
-  margin-bottom: 10px;
 }
+
+.message-box-post {
+  margin: 0 auto;
+  text-align: center;
+  width: 200px;
+  height: 30px;
+  color: rgb(36, 119, 36);
+}
+
+/* Posts users */
 
 .elem {
   position: relative;
@@ -195,9 +206,5 @@ h1 {
   position: absolute;
   top: 4px;
   right: 22%;
-}
-
-.color {
-  color: red;
 }
 
