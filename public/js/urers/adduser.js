@@ -1,4 +1,4 @@
-const Registred = (function() {
+const Registred = (function () {
 
   function Registred() {
 
@@ -8,18 +8,18 @@ const Registred = (function() {
     const btnRegistred = document.getElementById('btnReg');
     const help = new Help();
 
-    if(btnRegistred) {
-      btnRegistred.addEventListener('click', function(event) {
+    if (btnRegistred) {
+      btnRegistred.addEventListener('click', function (event) {
         event.preventDefault();
-  
-      if(inputNameSign.value != '' && inputPassSign.value != '' && inputEmailSign.value != '') {
+
+        if (inputNameSign.value != '' && inputPassSign.value != '' && inputEmailSign.value != '') {
           let userSignUp = {
             username: inputNameSign.value,
             userpass: inputPassSign.value,
             useremail: inputEmailSign.value
           }
-    
-          fetch('/users', { 
+
+          fetch('/users', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json"
@@ -27,16 +27,16 @@ const Registred = (function() {
             body: JSON.stringify(userSignUp),
             redirect: 'follow'
           })
-          .then(help.checkStatus)
-          .then(help.parseJSON)
-          .then(function(response) {
-            const form = document.getElementById('signUpForm').remove();
-            const text = response.error||response;
-            const message = response.error ? new UserMessage(text, false) : new UserMessage(text, true);
-          })
-          .catch(function(error) {
-            console.log(error);
-          })
+            .then(help.checkStatus)
+            .then(help.parseJSON)
+            .then(function (response) {
+              const form = document.getElementById('signUpForm').remove();
+              const text = response.error || response;
+              const message = response.error ? new UserMessage(text, false) : new UserMessage(text, true);
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
         } else {
           const text = 'Все поля должны быть заполнены';
           const message = new UserMessage(text, false);
@@ -47,4 +47,4 @@ const Registred = (function() {
 
   return Registred;
 
-}) ()
+})()
