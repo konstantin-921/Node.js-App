@@ -4,11 +4,11 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../models/sequelize');
 
 router.post('/users', function (req, res, next) {
+  console.log(req.body);
   hash(req, res, next);
 });
 
 function hash(req, res, next) {
-  console.log(req.body);
   let passwordFromUser = req.body.userpass;
   let salt = bcrypt.genSaltSync(10);
   let passwordToSave = bcrypt.hashSync(passwordFromUser, salt);

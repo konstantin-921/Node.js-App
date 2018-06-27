@@ -14,7 +14,6 @@ async function query(req, res, next) {
   try {
     let username = req.query.username;
     let userpass = req.query.userpass;
-    console.log(username, userpass);
     let data = await sequelize.query(`SELECT * FROM users WHERE name = :name`, { replacements: { name: username }, type: sequelize.QueryTypes.SELECT });
     let user = data[0];
     let hash = bcrypt.compareSync(userpass, user.password);
@@ -35,6 +34,7 @@ async function query(req, res, next) {
 
 
 router.post('/auth/secret', passport.authenticate('jwt', { session: false }), function (req, res, next) {
+  console.log(req.body);
   try {
     res.json("Success! You can not see this without a token");
   } catch (error) {
