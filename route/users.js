@@ -39,8 +39,13 @@ async function findUser(req, res, next) {
   try {
     let id = req.query.id;
     let letter = req.query.letter;
-    let data = await sequelize.query(`SELECT name, id FROM users WHERE name ILIKE :search and NOT id = :id`, { replacements: { search: `${letter}%`, id: id }, type: sequelize.QueryTypes.SELECT });
-    res.json(data);
+    if (letter) {
+      const data = await sequelize.query(`SELECT name, id FROM users WHERE name ILIKE :search and NOT id = :id`, { replacements: { search: `${letter}%`, id: id }, type: sequelize.QueryTypes.SELECT });
+      res.json(data);
+    } else {
+      const data = [];
+      res.json(data);
+    }
   } catch (error) {
     next(error);
   }

@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken')
 
 module.exports = (req, res, next) => {
-  console.log(req.url);
   let auth = req.get('Authorization');
   if (auth && req.url !== '/users') {
     let token = auth.substring(7);
