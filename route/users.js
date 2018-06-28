@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../models/sequelize');
 
 router.post('/users', function (req, res, next) {
-  console.log(req.body);
   hash(req, res, next);
 });
 

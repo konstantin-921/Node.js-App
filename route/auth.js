@@ -34,7 +34,6 @@ async function query(req, res, next) {
 
 
 router.post('/auth/secret', passport.authenticate('jwt', { session: false }), function (req, res, next) {
-  console.log(req.body);
   try {
     res.json("Success! You can not see this without a token");
   } catch (error) {
