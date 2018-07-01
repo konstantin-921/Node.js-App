@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const Sequelize = require('sequelize');
 const sequelize = require('../models/sequelize');
 
+const Op = Sequelize.Op;
+
 const Followers = sequelize.define('followers', {
   id: {
     type: Sequelize.BIGINT,
@@ -18,6 +20,26 @@ const Followers = sequelize.define('followers', {
     primaryKey: true,
   },
 });
+
+const Users = sequelize.define('users', {
+  id: {
+    type: Sequelize.BIGINT,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  password: {
+    type: Sequelize.TEXT,
+  },
+  name: {
+    type: Sequelize.TEXT,
+  },
+  email: {
+    type: Sequelize.TEXT,
+  },
+  avatar: {
+    type: Sequelize.BLOB,
+  }
+})
 
 router.post('/users', function (req, res, next) {
   hash(req, res, next);
@@ -45,27 +67,46 @@ async function addUser(req, res, next) {
   }
 }
 
-
-
 router.get('/followers', function (req, res, next) {
-  findUser(req, res, next);
+  let letter = req.query.letter;
+  let id = req.query.id;
+  Users.findAll({
+    attributes: ['name', 'id'],
+    where: {
+      name: { [Op.iLike]: `${letter}%` },
+      id: { [Op.not]: id },
+    },
+    raw: true,
+  })
+    .then((users) => {
+      if (letter) {
+        res.json(users);
+      } else {
+        const users = [];
+        res.json(users);
+      }
+    })
+    .catch((error) => {
+      next(error);
+    })
+  // findUser(req, res, next);
 })
 
-async function findUser(req, res, next) {
-  try {
-    let id = req.query.id;
-    let letter = req.query.letter;
-    if (letter) {
-      const data = await sequelize.query(`SELECT name, id FROM users WHERE name ILIKE :search and NOT id = :id`, { replacements: { search: `${letter}%`, id: id }, type: sequelize.QueryTypes.SELECT });
-      res.json(data);
-    } else {
-      const data = [];
-      res.json(data);
-    }
-  } catch (error) {
-    next(error);
-  }
-}
+// async function findUser(req, res, next) {
+//   try {
+//     let id = req.query.id;
+//     let letter = req.query.letter;
+//     if (letter) {
+//       const data = await sequelize.query(`SELECT name, id FROM users WHERE name ILIKE :search and NOT id = :id`, { replacements: { search: `${letter}%`, id: id }, type: sequelize.QueryTypes.SELECT });
+//       res.json(data);
+//     } else {
+//       const data = [];
+//       res.json(data);
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 
 
