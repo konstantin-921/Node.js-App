@@ -72,7 +72,7 @@ async function findUser(req, res, next) {
 router.post('/followers', function (req, res, next) {
   Followers.create({ following: req.body.id, follower: req.body.userId })
     .then(() => {
-      res.json("Success add!");
+      res.json("Success!");
     })
     .catch((error) => {
       next(error);
