@@ -1,7 +1,23 @@
 const express = require('express');
 const router = module.exports = express.Router();
 const bcrypt = require('bcrypt');
+const Sequelize = require('sequelize');
 const sequelize = require('../models/sequelize');
+
+const Followers = sequelize.define('followers', {
+  id: {
+    type: Sequelize.BIGINT,
+    autoIncrement: true,
+  },
+  follower: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+  },
+  following: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+  },
+});
 
 router.post('/users', function (req, res, next) {
   hash(req, res, next);
@@ -22,7 +38,7 @@ async function addUser(req, res, next) {
       let data = await sequelize.query(`INSERT INTO users (password, name, email) VALUES (:userpass, :username, :useremail)`, { replacements: { userpass: req.body.userpass, username: req.body.username, useremail: req.body.useremail } });
       res.json("Successful registration!");
     } else {
-      res.json({ error: 'Такой пользователь уже существует' });
+      res.json({ error: 'This user already exists' });
     }
   } catch (error) {
     next(error);
@@ -54,32 +70,47 @@ async function findUser(req, res, next) {
 
 
 router.post('/followers', function (req, res, next) {
-  followUser(req, res, next);
+  Followers.create({ following: req.body.id, follower: req.body.userId })
+    .then(() => {
+      res.json("Success add!");
+    })
+    .catch((error) => {
+      next(error);
+    })
+  // followUser(req, res, next);
 })
 
-async function followUser(req, res, next) {
-  try {
-    await sequelize.query(`INSERT INTO followers (follower, following) VALUES (:follower, :following)`, { replacements: { follower: req.body.userId, following: req.body.id } });
-    res.json("Success!");
-  } catch (error) {
-    next(error);
-  }
-}
+// async function followUser(req, res, next) {
+//   try {
+//     await sequelize.query(`INSERT INTO followers (follower, following) VALUES (:follower, :following)`, { replacements: { follower: req.body.userId, following: req.body.id } });
+//     res.json("Success!");
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 
 
 router.delete('/followers', function (req, res, next) {
-  deletefollow(req, res, next);
+  Followers.destroy({ where: { following: req.body.id, follower: req.body.userId }, raw: true })
+    .then(() => {
+      res.json("Success delete!");
+    })
+    .catch((error) => {
+      next(error);
+    })
+  // deletefollow(req, res, next);
 })
 
-async function deletefollow(req, res, next) {
-  try {
-    await sequelize.query(`DELETE FROM followers WHERE following = :following and follower = :follower`, { replacements: { following: req.body.id, follower: req.body.userId } });
-    res.json("Success!");
-  } catch (error) {
-    next(error);
-  }
-}
+
+// async function deletefollow(req, res, next) {
+//   try {
+//     await sequelize.query(`DELETE FROM followers WHERE following = :following and follower = :follower`, { replacements: { following: req.body.id, follower: req.body.userId } });
+//     res.json("Success!");
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 
 

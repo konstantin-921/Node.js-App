@@ -23,10 +23,10 @@ async function query(req, res, next) {
       let token = jwt.sign(payload, strategy.jwtOptions.secretOrKey, { expiresIn: '30h' });
       res.json({ message: "ok", token: token, userId: user.id });
     } else {
-      res.json({ message: "Пароль не верен" });
+      res.json({ message: "Password is incorrect" });
     }
   } catch (error) {
-    res.json({ message: "Такого пользователя не существует" });
+    res.json({ message: "This user does not exist" });
     next(error);
   }
 }
