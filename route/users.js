@@ -1,45 +1,9 @@
 const express = require('express');
 const router = module.exports = express.Router();
 const bcrypt = require('bcrypt');
+const { Followers, Users } = require('../models/models');
 const Sequelize = require('sequelize');
-const sequelize = require('../models/sequelize');
-
 const Op = Sequelize.Op;
-
-const Followers = sequelize.define('followers', {
-  id: {
-    type: Sequelize.BIGINT,
-    autoIncrement: true,
-  },
-  follower: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-  },
-  following: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-  },
-});
-
-const Users = sequelize.define('users', {
-  id: {
-    type: Sequelize.BIGINT,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  password: {
-    type: Sequelize.TEXT,
-  },
-  name: {
-    type: Sequelize.TEXT,
-  },
-  email: {
-    type: Sequelize.TEXT,
-  },
-  avatar: {
-    type: Sequelize.BLOB,
-  }
-})
 
 router.post('/users', function (req, res, next) {
   hash(req, res, next);
@@ -53,28 +17,51 @@ function hash(req, res, next) {
   addUser(req, res, next);
 }
 
-async function addUser(req, res, next) {
-  try {
-    let search = await sequelize.query(`SELECT *  FROM users WHERE name = '${req.body.username}' `, { type: sequelize.QueryTypes.SELECT });
-    if (search[0] === undefined) {
-      let data = await sequelize.query(`INSERT INTO users (password, name, email) VALUES (:userpass, :username, :useremail)`, { replacements: { userpass: req.body.userpass, username: req.body.username, useremail: req.body.useremail } });
-      res.json("Successful registration!");
-    } else {
-      res.json({ error: 'This user already exists' });
-    }
-  } catch (error) {
-    next(error);
-  }
+function addUser(req, res, next) {
+  Users.findAll({
+    where: { name: `${req.body.username}` },
+  })
+    .then((users) => {
+      if (users[0] === undefined) {
+        Users.create({
+          password: req.body.userpass,
+          name: req.body.username,
+          email: req.body.useremail,
+        })
+          .then(() => { res.json("Successful registration!") })
+          .catch((error) => {
+            next(error);
+          })
+      } else {
+        res.json({ error: 'This user already exists' });
+      }
+    })
+    .catch((error) => {
+      next(error);
+    })
 }
+
+// async function addUser(req, res, next) {
+//   try {
+//     let search = await sequelize.query(`SELECT *  FROM users WHERE name = '${req.body.username}' `, { type: sequelize.QueryTypes.SELECT });
+//     if (search[0] === undefined) {
+//       let data = await sequelize.query(`INSERT INTO users (password, name, email) VALUES (:userpass, :username, :useremail)`, { replacements: { userpass: req.body.userpass, username: req.body.username, useremail: req.body.useremail } });
+//       res.json("Successful registration!");
+//     } else {
+//       res.json({ error: 'This user already exists' });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 router.get('/followers', function (req, res, next) {
   let letter = req.query.letter;
-  let id = req.query.id;
   Users.findAll({
     attributes: ['name', 'id'],
     where: {
       name: { [Op.iLike]: `${letter}%` },
-      id: { [Op.not]: id },
+      id: { [Op.not]: req.query.id },
     },
     raw: true,
   })
@@ -112,9 +99,7 @@ router.get('/followers', function (req, res, next) {
 
 router.post('/followers', function (req, res, next) {
   Followers.create({ following: req.body.id, follower: req.body.userId })
-    .then(() => {
-      res.json("Success!");
-    })
+    .then(() => { res.json("Success!") })
     .catch((error) => {
       next(error);
     })
@@ -134,9 +119,7 @@ router.post('/followers', function (req, res, next) {
 
 router.delete('/followers', function (req, res, next) {
   Followers.destroy({ where: { following: req.body.id, follower: req.body.userId }, raw: true })
-    .then(() => {
-      res.json("Success delete!");
-    })
+    .then(() => { res.json("Success delete!") })
     .catch((error) => {
       next(error);
     })
@@ -156,15 +139,23 @@ router.delete('/followers', function (req, res, next) {
 
 
 router.get('/followers/teststate', function (req, res, next) {
-  teststate(req, res, next);
+  Followers.findAll({
+    attributes: ['follower', 'following'],
+    raw: true,
+  })
+    .then((followers) => { res.json(followers) })
+    .catch((error) => {
+      next(error);
+    })
+  // teststate(req, res, next);
 })
 
-async function teststate(req, res, next) {
-  try {
-    let data = await sequelize.query(`SELECT follower, following FROM followers`, { type: sequelize.QueryTypes.SELECT });
-    res.json(data);
-  } catch (error) {
-    next(error);
-  }
-}
+// async function teststate(req, res, next) {
+//   try {
+//     let data = await sequelize.query(`SELECT follower, following FROM followers`, { type: sequelize.QueryTypes.SELECT });
+//     res.json(data);
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 

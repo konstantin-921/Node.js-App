@@ -1,35 +1,48 @@
 const express = require('express');
 const router = module.exports = express.Router();
 const sequelize = require('../models/sequelize');
+const { Posts, Users, Followers } = require('../models/models');
+// const Sequelize = require('sequelize');
 
 router.get('/posts', function (req, res, next) {
-  sendPosts(req, res, next);
+  Posts.findAll({
+    where: {
+      user_id: req.query.id,
+    }
+  })
+    .then((posts) => {
+      res.json(posts);
+    })
+    .catch((error) => {
+      next(error);
+    })
 });
-
-async function sendPosts(req, res, next) {
-  try {
-    let id = req.query.id;
-    let data = await sequelize.query(`SELECT * FROM posts WHERE user_id = ?`, { replacements: [id], type: sequelize.QueryTypes.SELECT });
-    res.json(data);
-  } catch (error) {
-    next(error);
-  }
-}
 
 router.post('/posts', function (req, res, next) {
-  savePost(req, res, next);
+  Posts.create({
+    content: req.body.postArea,
+    date: req.body.postDate,
+    title: req.body.postTitle,
+    user_id: req.body.id,
+  })
+    .then(() => {
+      res.json("Post successfully saved!");
+    })
+    .catch((error) => {
+      next(error);
+    })
 });
 
-async function savePost(req, res, next) {
-  try {
-    await sequelize.query(`INSERT INTO posts (content, date, title, user_id) VALUES (:text, :date, :title, :id)`, { replacements: { text: req.body.postArea, date: req.body.postDate, title: req.body.postTitle, id: req.body.id } });
-    res.json("Post successfully saved!")
-  } catch (error) {
-    next(error);
-  }
-}
-
 router.get('/posts/friendsposts', function (req, res, next) {
+  // Users.findAll({
+  //   include: [Posts]
+  // })
+  //   .then(users => {
+  //     res.json(users);
+  //   })
+  //   .catch(error => {
+  //     next(error);
+  //   })
   sendFriendsPosts(req, res, next);
 })
 
