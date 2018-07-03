@@ -1,8 +1,8 @@
 const express = require('express');
 const router = module.exports = express.Router();
 const sequelize = require('../models/sequelize');
-const { Posts, Users, Followers } = require('../models/models');
-// const Sequelize = require('sequelize');
+// const models = require('../models/sequelize');
+const Sequelize = require('sequelize');
 
 router.get('/posts', function (req, res, next) {
   Posts.findAll({

@@ -4,14 +4,15 @@ const jwt = require('jsonwebtoken');
 const strategy = require("../api/services/strategy");
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-const { Users } = require('../models/models');
+// const { Users } = require('../models/models');
+const models = require('../models/sequelize');
 
 router.get('/auth/login', function (req, res, next) {
   query(req, res, next);
 });
 
 function query(req, res, next) {
-  Users.findAll({
+  models.Users.findAll({
     where: {
       name: req.query.username,
     },
