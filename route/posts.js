@@ -35,36 +35,45 @@ router.post('/posts', function (req, res, next) {
 });
 
 router.get('/posts/friendsposts', function (req, res, next) {
-  models.Users.findAll({
-    attributes: ['name'],
-    include: [
-      {
-        model: models.Posts,
-        as: 'message',
-      },
-      {
-        model: models.Followers,
-        attributes: ['following'],
-        as: 'bindFollower',
-        where: {
-          follower: 1,
+  models.Followers.findAll({
+    attributes: ['following'],
+    where: {
+      follower: req.query.id
+    }
+  }).then(response => {
+    const followers = response.map(follower => follower.dataValues.following);
+    console.log('followers', followers);
+    models.Users.findAll({
+      attributes: ['name'],
+      include: [
+        {
+          model: models.Posts,
+          as: 'message',
+          where: {
+            'user_id': {
+              [Op.in]:  followers 
+            }
+          }
         },
-      }
-    ],
+      ],
+    })
+      .then(users => {
+        console.log('users', users);
+        res.json(users);
+      })
+      .catch(error => {
+        next(error);
+      })
+
   })
-    .then(users => {
-      res.json(users);
-    })
-    .catch(error => {
-      next(error);
-    })
   // sendFriendsPosts(req, res, next);
 })
 
 // async function sendFriendsPosts(req, res, next) {
 //   try {
 //     let id = req.query.id;
-//     let data = await sequelize.query(`SELECT users.name, posts.id, posts.content, posts.date, posts.user_id, posts.title  FROM users RIGHT JOIN posts ON users.id = posts.user_id WHERE posts.user_id IN (SELECT following FROM followers WHERE follower = ?)`, { replacements: [id], type: sequelize.QueryTypes.SELECT });
+//     let data = await sequelize.query(`SELECT users.name, posts.id, posts.content, posts.date, posts.user_id, 
+//posts.title  FROM users RIGHT JOIN posts ON users.id = posts.user_id WHERE posts.user_id IN (SELECT following FROM followers WHERE follower = ?)`, { replacements: [id], type: sequelize.QueryTypes.SELECT });
 //     res.json(data);
 //   } catch (error) {
 //     next(error);
