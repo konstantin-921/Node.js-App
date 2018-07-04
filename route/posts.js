@@ -1,11 +1,12 @@
 const express = require('express');
 const router = module.exports = express.Router();
 const sequelize = require('../models/sequelize');
-// const models = require('../models/sequelize');
+const models = require('../models/sequelize');
 const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 router.get('/posts', function (req, res, next) {
-  Posts.findAll({
+  models.Posts.findAll({
     where: {
       user_id: req.query.id,
     }
@@ -19,7 +20,7 @@ router.get('/posts', function (req, res, next) {
 });
 
 router.post('/posts', function (req, res, next) {
-  Posts.create({
+  models.Posts.create({
     content: req.body.postArea,
     date: req.body.postDate,
     title: req.body.postTitle,
@@ -34,24 +35,38 @@ router.post('/posts', function (req, res, next) {
 });
 
 router.get('/posts/friendsposts', function (req, res, next) {
-  // Users.findAll({
-  //   include: [Posts]
-  // })
-  //   .then(users => {
-  //     res.json(users);
-  //   })
-  //   .catch(error => {
-  //     next(error);
-  //   })
-  sendFriendsPosts(req, res, next);
+  models.Users.findAll({
+    attributes: ['name'],
+    include: [
+      {
+        model: models.Posts,
+        as: 'message',
+      },
+      {
+        model: models.Followers,
+        attributes: ['following'],
+        as: 'bindFollower',
+        where: {
+          follower: 1,
+        },
+      }
+    ],
+  })
+    .then(users => {
+      res.json(users);
+    })
+    .catch(error => {
+      next(error);
+    })
+  // sendFriendsPosts(req, res, next);
 })
 
-async function sendFriendsPosts(req, res, next) {
-  try {
-    let id = req.query.id;
-    let data = await sequelize.query(`SELECT users.name, posts.id, posts.content, posts.date, posts.user_id, posts.title  FROM users RIGHT JOIN posts ON users.id = posts.user_id WHERE posts.user_id IN (SELECT following FROM followers WHERE follower = ?)`, { replacements: [id], type: sequelize.QueryTypes.SELECT });
-    res.json(data);
-  } catch (error) {
-    next(error);
-  }
-}
+// async function sendFriendsPosts(req, res, next) {
+//   try {
+//     let id = req.query.id;
+//     let data = await sequelize.query(`SELECT users.name, posts.id, posts.content, posts.date, posts.user_id, posts.title  FROM users RIGHT JOIN posts ON users.id = posts.user_id WHERE posts.user_id IN (SELECT following FROM followers WHERE follower = ?)`, { replacements: [id], type: sequelize.QueryTypes.SELECT });
+//     res.json(data);
+//   } catch (error) {
+//     next(error);
+//   }
+// }

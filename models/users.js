@@ -22,8 +22,21 @@ module.exports = (sequelize, DataTypes) => {
   Users.associate = function (models) {
     Users.belongsTo(models.Posts, {
       through: 'user',
-      foreignKey: 'userId',
+      foreignKey: 'id',
+      targetKey: 'user_id',
+      as: 'message',
     });
+    Users.belongsTo(models.Followers, {
+      foreignKey: 'id',
+      targetKey: 'follower',
+      as: 'bindFollower',
+    });
+    // Users.belongsTo(models.Followers, {
+    //   through: 'user',
+    //   foreignKey: 'id',
+    //   targetKey: 'following',
+    //   as: 'bindFollowing',
+    // });
   };
 
   return Users;

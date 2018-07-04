@@ -15,16 +15,14 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Followers.associate = function (models) {
-    Followers.belongsToMany(models.Users, {
-      through: 'follower',
+    Followers.belongsTo(models.Users, {
       foreignKey: 'follower',
-      as: 'userFollower',
+      as: 'bindFollower',
     });
-    Followers.belongsToMany(models.Users, {
-      through: 'following',
-      foreignKey: 'following',
-      as: 'userFollowing',
-    });
+    // Followers.belongsTo(models.Users, {
+    //   foreignKey: 'following',
+    //   as: 'bindFollowing',
+    // });
   };
 
   return Followers;
