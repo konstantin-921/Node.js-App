@@ -23,7 +23,7 @@ function addUser(req, res, next) {
   })
     .then((users) => {
       if (users[0] === undefined) {
-        Users.create({
+        models.Users.create({
           password: req.body.userpass,
           name: req.body.username,
           email: req.body.useremail,

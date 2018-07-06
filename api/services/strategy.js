@@ -13,7 +13,6 @@ function Strategy() {
   this.jwtOptions.secretOrKey = 'tasmanianDevil';
 
   this.strategy = new JwtStrategy(this.jwtOptions, function (jwt_payload, next) {
-    console.log('payload received', jwt_payload);
     models.Users.findAll({
       where: {
         id: `${jwt_payload.user}`,

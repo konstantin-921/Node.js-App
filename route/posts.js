@@ -42,7 +42,6 @@ router.get('/posts/friendsposts', function (req, res, next) {
     }
   }).then(response => {
     const followers = response.map(follower => follower.dataValues.following);
-    console.log('followers', followers);
     models.Users.findAll({
       attributes: ['name'],
       include: [
@@ -51,14 +50,13 @@ router.get('/posts/friendsposts', function (req, res, next) {
           as: 'message',
           where: {
             'user_id': {
-              [Op.in]:  followers 
+              [Op.in]: followers
             }
           }
         },
       ],
     })
       .then(users => {
-        console.log('users', users);
         res.json(users);
       })
       .catch(error => {
@@ -66,16 +64,4 @@ router.get('/posts/friendsposts', function (req, res, next) {
       })
 
   })
-  // sendFriendsPosts(req, res, next);
 })
-
-// async function sendFriendsPosts(req, res, next) {
-//   try {
-//     let id = req.query.id;
-//     let data = await sequelize.query(`SELECT users.name, posts.id, posts.content, posts.date, posts.user_id, 
-//posts.title  FROM users RIGHT JOIN posts ON users.id = posts.user_id WHERE posts.user_id IN (SELECT following FROM followers WHERE follower = ?)`, { replacements: [id], type: sequelize.QueryTypes.SELECT });
-//     res.json(data);
-//   } catch (error) {
-//     next(error);
-//   }
-// }
